@@ -4,29 +4,30 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>vibe-research-loop skills</title>
-<meta name="description" content="Agent skills for Claude Code and Codex: agents run the experiment loop, and you make the decisions. A 72-second tour from install to a confirmed finding.">
+<meta name="description" content="Agent skills for Claude Code and Codex: agents run the experiment loop, and you make the decisions. Swipe through each skill, from install to a confirmed finding.">
 <meta property="og:title" content="vibe-research-loop skills">
-<meta property="og:description" content="Agent skills for Claude Code and Codex: agents run the experiment loop, and you make the decisions. A 72-second tour from install to a confirmed finding.">
+<meta property="og:description" content="Agent skills for Claude Code and Codex: agents run the experiment loop, and you make the decisions.">
 <meta property="og:type" content="website">
+<meta name="theme-color" content="#0d0c14">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' rx='30' fill='%23141327'/%3E%3Cpath d='M120 75 A45 45 0 1 1 98 36' fill='none' stroke='%23b9a5ff' stroke-width='14' stroke-linecap='round'/%3E%3Cpath d='M84 14 L122 28 L96 58 Z' fill='%23b9a5ff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-/* Layout: an After Effects composition panel. A 1280x720 comp viewer scaled to fit, a transport bar,
-   and a layer timeline with label colors and a blue playhead, then a short install note.
-   One dark look on purpose, like the app itself. */
+/* A product page: a hero with the loop at a glance, then a carousel of feature cards, one per skill.
+   The centered card plays its animation once; the neighbors peek in, dimmed, showing their last frame.
+   At the three human decisions the animation waits for the reader's click. */
 :root {
   color-scheme: dark;
-  --ui-bg: #1a1a1d;
-  --ui-panel: #222226;
-  --ui-raised: #2b2b30;
-  --ui-line: #36363c;
-  --ui-text: #cbcad2;
-  --ui-dim: #8c8b95;
-  --cti: #2d8ceb;
-  --comp-bg: #141327;
-  --comp-bg2: #1e1c3a;
+  --bg: #0d0c14;
+  --surface: rgba(255, 255, 255, .04);
+  --surface-2: rgba(255, 255, 255, .07);
+  --stroke: rgba(255, 255, 255, .09);
+  --stroke-2: rgba(255, 255, 255, .16);
+  --text: #eeecf6;
+  --dim: #aaa7bf;
+  --muted: #7f7c95;
+  --accent: #9cc8ff;
   --ink: #f4f2ff;
   --ink-dim: #a9a5c9;
   --paper: #f6f5f1;
@@ -39,141 +40,208 @@
   --remote: #6f8ef6;
   --red: #ef6461;
   --orange: #f39b3d;
+  --cw: min(1180px, 90vw);
   --f-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
   --f-ui: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
-html, body { background: var(--ui-bg); }
-body { color: var(--ui-text); font-family: var(--f-ui); font-size: 14px; padding-inline: 16px; padding-block: 20px 48px; }
-.app { max-width: 1180px; margin: 0 auto; display: grid; gap: 10px; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body { margin: 0; background: var(--bg); }
+body { color: var(--text); font-family: var(--f-ui); font-size: 17px; line-height: 1.55; overflow-x: hidden; }
+a { color: var(--accent); }
+button { font: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.wrap { width: var(--cw); margin: 0 auto; }
 
-/* Panel chrome */
-.tabbar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; background: var(--ui-panel); border: 1px solid var(--ui-line); border-radius: 6px 6px 0 0; padding: 8px 12px; }
-.tab { font-size: 12.5px; color: var(--ui-text); padding: 3px 10px; border-radius: 4px; background: var(--ui-raised); box-shadow: inset 0 -2px 0 var(--cti); }
-.tabbar .meta { font-family: var(--f-mono); font-size: 11.5px; color: var(--ui-dim); margin-left: auto; font-variant-numeric: tabular-nums; }
-.viewer { position: relative; width: 100%; aspect-ratio: 16 / 9; max-width: 100%; background: #0b0b0d; overflow: hidden; border: 1px solid var(--ui-line); border-top: 0; }
-.viewer-foot { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; background: var(--ui-panel); border: 1px solid var(--ui-line); border-top: 0; padding: 6px 12px; font-size: 11.5px; color: var(--ui-dim); font-variant-numeric: tabular-nums; }
-.viewer-foot b { color: var(--ui-text); font-weight: 500; }
-.viewer-foot .tc-small { font-family: var(--f-mono); color: var(--cti); }
+/* ---------- Top bar ---------- */
+.top { position: sticky; top: 0; z-index: 30; backdrop-filter: saturate(160%) blur(14px); -webkit-backdrop-filter: saturate(160%) blur(14px); background: rgba(13, 12, 20, .62); border-bottom: 1px solid var(--stroke); }
+.top .wrap { display: flex; align-items: center; gap: 20px; height: 62px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--f-display); font-weight: 760; font-size: 18px; color: var(--text); text-decoration: none; }
+.brand svg { width: 26px; height: 26px; }
+.top nav { margin-left: auto; display: flex; align-items: center; gap: 24px; font-size: 15px; }
+.top nav a { color: var(--dim); text-decoration: none; }
+.top nav a:hover { color: var(--text); }
+.top nav .gh { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--stroke-2); color: var(--text); }
+.top nav .gh svg { width: 16px; height: 16px; fill: currentColor; }
 
-/* Transport */
-.transport { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px; background: var(--ui-panel); border: 1px solid var(--ui-line); border-radius: 6px; padding: 8px 12px; }
-.btns { display: flex; gap: 4px; }
-.tbtn { width: 34px; height: 30px; border-radius: 4px; border: 1px solid var(--ui-line); background: var(--ui-raised); color: var(--ui-text); display: grid; place-items: center; cursor: pointer; }
-.tbtn:hover { border-color: #4a4a52; color: #fff; }
-.tbtn:focus-visible, .tl-bar:focus-visible, .copy button:focus-visible, .info a:focus-visible { outline: 2px solid var(--cti); outline-offset: 2px; }
-.tbtn svg { width: 14px; height: 14px; fill: currentColor; }
-.tc { font-family: var(--f-mono); font-size: 20px; color: var(--cti); font-variant-numeric: tabular-nums; letter-spacing: .02em; }
-.frames { font-family: var(--f-mono); font-size: 11.5px; color: var(--ui-dim); font-variant-numeric: tabular-nums; }
-.now { margin-left: auto; font-size: 12.5px; color: var(--ui-text); display: flex; align-items: center; gap: 8px; min-width: 0; }
-.now i { width: 10px; height: 10px; border-radius: 2px; background: var(--ui-dim); flex: none; }
-.keys { font-size: 11.5px; color: var(--ui-dim); }
+/* ---------- Hero ---------- */
+.hero { position: relative; overflow: hidden; min-height: calc(100vh - 62px); min-height: calc(100svh - 62px); display: grid; align-items: center; padding: 70px 0 56px; isolation: isolate; }
+.aurora { position: absolute; inset: -20% -10% auto; height: 720px; z-index: -1; pointer-events: none; }
+.aurora i { position: absolute; border-radius: 50%; filter: blur(90px); opacity: .55; }
+.aurora .a1 { width: 560px; height: 420px; left: 8%; top: 8%; background: #5b3fe0; animation: drift1 18s ease-in-out infinite alternate; }
+.aurora .a2 { width: 520px; height: 380px; right: 6%; top: 0; background: #1f8f7d; animation: drift2 22s ease-in-out infinite alternate; }
+.aurora .a3 { width: 420px; height: 300px; left: 42%; top: 36%; background: #b9a5ff; opacity: .28; animation: drift1 26s ease-in-out infinite alternate-reverse; }
+@keyframes drift1 { to { transform: translate(60px, 40px) scale(1.08); } }
+@keyframes drift2 { to { transform: translate(-70px, 50px) scale(1.1); } }
+.gridbg { position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: linear-gradient(var(--stroke) 1px, transparent 1px), linear-gradient(90deg, var(--stroke) 1px, transparent 1px); background-size: 56px 56px; -webkit-mask-image: radial-gradient(70% 60% at 50% 30%, #000, transparent); mask-image: radial-gradient(70% 60% at 50% 30%, #000, transparent); opacity: .5; }
+.hero .wrap { display: grid; justify-items: center; text-align: center; gap: 22px; }
+.badge { display: inline-flex; align-items: center; gap: 10px; padding: 6px 14px 6px 8px; border-radius: 999px; border: 1px solid var(--stroke-2); background: var(--surface); font-size: 14.5px; color: var(--dim); }
+.badge b { padding: 2px 9px; border-radius: 999px; background: rgba(98, 196, 107, .16); color: #bff0c4; font-weight: 600; font-size: 13px; }
+.hero h1 { margin: 0; font-family: var(--f-display); font-weight: 860; font-variation-settings: "wdth" 100; font-size: clamp(46px, 8.4vw, 112px); line-height: .94; letter-spacing: -.025em; background: linear-gradient(180deg, #fff 30%, #b9b5d6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero h1 em { font-style: normal; background: linear-gradient(90deg, #62c46b, #a6efae); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero .tag { margin: 0; max-width: 760px; font-size: clamp(19px, 2.2vw, 24px); color: var(--dim); }
+.hero .tag b { color: var(--text); font-weight: 600; }
+.cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 4px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 999px; font-weight: 600; font-size: 16px; text-decoration: none; cursor: pointer; border: 1px solid var(--stroke-2); background: var(--surface); color: var(--text); transition: transform .15s, background .15s; }
+.btn:hover { transform: translateY(-1px); background: var(--surface-2); }
+.btn.primary { border-color: transparent; color: #0c1f0f; background: linear-gradient(180deg, #7fd987, #57b860); box-shadow: 0 8px 30px rgba(98, 196, 107, .35); }
 
-/* Timeline */
-.timeline { display: grid; grid-template-columns: 180px minmax(0, 1fr); background: var(--ui-panel); border: 1px solid var(--ui-line); border-radius: 6px; overflow: hidden; user-select: none; -webkit-user-select: none; }
-.tl-left { border-right: 1px solid var(--ui-line); }
-.tl-head { height: 26px; display: flex; align-items: center; padding: 0 10px; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ui-dim); border-bottom: 1px solid var(--ui-line); }
-.tl-name { height: 22px; display: flex; align-items: center; gap: 8px; padding: 0 10px; font-size: 12px; color: var(--ui-text); border-bottom: 1px solid #2a2a2f; white-space: nowrap; overflow: hidden; }
-.tl-name i { width: 10px; height: 10px; border-radius: 2px; flex: none; }
-.tl-name .num { font-family: var(--f-mono); font-size: 10.5px; color: var(--ui-dim); width: 16px; }
-.tl-name.on, .tl-lane.on { background: #2a2a33; }
-.tl-right { position: relative; cursor: ew-resize; touch-action: none; }
-.ruler { position: relative; height: 26px; border-bottom: 1px solid var(--ui-line); background: #1f1f23; }
-.tick { position: absolute; bottom: 0; width: 1px; height: 6px; background: #4a4a52; }
-.tick.major { height: 11px; background: #6a6a74; }
-.tick span { position: absolute; bottom: 12px; left: 3px; font-family: var(--f-mono); font-size: 10px; color: var(--ui-dim); }
-.workarea { position: absolute; left: 0; right: 0; top: 2px; height: 5px; background: #57575f; border-radius: 2px; }
-.tl-lane { position: relative; height: 22px; border-bottom: 1px solid #2a2a2f; }
-.tl-bar { position: absolute; top: 4px; height: 13px; border-radius: 2px; border: 0; padding: 0; background: var(--c); opacity: .78; cursor: pointer; }
-.tl-bar:hover { opacity: 1; }
-.kf { position: absolute; top: 2px; width: 8px; height: 8px; background: #e8e8ee; transform: rotate(45deg); box-shadow: 0 0 0 1px #1b1b1f; }
-.kf.l { left: 2px; } .kf.r { right: 2px; }
-.cti { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--cti); pointer-events: none; left: 0; }
-.cti::before { content: ""; position: absolute; top: 0; left: -6px; width: 13px; height: 14px; background: var(--cti); clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%); }
+/* The loop at a glance */
+.flow { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin-top: 28px; }
+.fstep { padding: 9px 16px; border-radius: 999px; border: 1px solid rgba(98, 196, 107, .45); background: rgba(98, 196, 107, .1); color: #dff5e1; font-size: 15px; font-weight: 500; cursor: pointer; }
+.fstep:hover { background: rgba(98, 196, 107, .2); }
+.fgate { display: inline-flex; align-items: center; gap: 7px; padding: 6px 11px; border-radius: 999px; border: 1px dashed rgba(185, 165, 255, .6); color: #e3dbff; font-size: 13.5px; cursor: pointer; background: transparent; }
+.fgate i { width: 8px; height: 8px; transform: rotate(45deg); background: var(--human); }
+.fline { width: 18px; height: 1px; background: var(--stroke-2); }
+.hint-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; font-size: 14px; color: var(--muted); }
+.hint-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 7px; vertical-align: 0; }
 
-/* Info */
-.info { margin-top: 18px; display: grid; gap: 12px; max-width: 760px; }
-.info h2 { font-family: var(--f-display); font-weight: 760; font-variation-settings: "wdth" 92; font-size: 26px; color: #f2f1f7; margin: 0; text-wrap: balance; }
-.info p { margin: 0; line-height: 1.6; color: var(--ui-text); }
-.copy { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: start; background: var(--ui-panel); border: 1px solid var(--ui-line); border-radius: 6px; padding: 12px; }
-.copy code { font-family: var(--f-mono); font-size: 12.5px; line-height: 1.6; color: #e9e8f2; white-space: pre-wrap; word-break: break-word; min-width: 0; }
-.copy button { font: 600 12.5px var(--f-ui); color: #fff; background: var(--cti); border: 0; border-radius: 4px; padding: 7px 12px; cursor: pointer; }
-.info a { color: #8cc4ff; font-family: var(--f-mono); font-size: 12.5px; word-break: break-all; }
+/* ---------- Feature sections: one screen each, a short title over a large animation ---------- */
+.feature { position: relative; min-height: 100vh; min-height: 100svh; display: grid; align-items: center; padding: 48px 0; isolation: isolate; }
+.feature::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(50% 45% at 50% 62%, color-mix(in srgb, var(--c) 12%, transparent), transparent 72%); }
+.fcol { display: grid; justify-items: center; gap: 28px; }
+.fhead { text-align: center; display: grid; justify-items: center; gap: 12px; max-width: 760px; opacity: 0; transform: translateY(22px); transition: opacity .8s ease, transform .8s ease; }
+.feature.seen .fhead { opacity: 1; transform: none; }
+.meta { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; }
+.idx { font-family: var(--f-mono); font-size: 14px; color: var(--c); letter-spacing: .06em; }
+.skill-chip { font-family: var(--f-mono); font-size: 14px; padding: 3px 11px; border-radius: 999px; border: 1px solid var(--stroke-2); background: var(--surface); color: var(--text); }
+.decide-chip { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background: rgba(185, 165, 255, .14); color: #e6deff; }
+.decide-chip i { width: 7px; height: 7px; transform: rotate(45deg); background: var(--human); }
+.fhead h2 { margin: 0; font-family: var(--f-display); font-weight: 820; font-variation-settings: "wdth" 96; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.02; letter-spacing: -.018em; text-wrap: balance; }
+.sub { margin: 0; font-size: clamp(17px, 1.6vw, 20px); color: var(--dim); text-wrap: balance; }
+.sub b { color: var(--text); font-weight: 600; }
+.visual { position: relative; }
+.stage-box { position: relative; border-radius: 18px; overflow: hidden; box-shadow: 0 40px 100px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .08); }
+.vfoot { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 38px; margin-top: -6px; }
+.vis-hint { display: none; align-items: center; gap: 9px; padding: 8px 16px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--stroke-2); font-size: 15px; color: var(--text); }
+.vis-hint.show { display: inline-flex; }
+.vis-hint.wait { border-color: rgba(185, 165, 255, .65); background: rgba(185, 165, 255, .12); color: #efe9ff; }
+.vis-hint.wait::before { content: ""; width: 8px; height: 8px; flex: none; transform: rotate(45deg); background: var(--human); }
+.replay { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px; border: 1px solid transparent; background: transparent; color: var(--muted); font-size: 14px; cursor: pointer; }
+.replay:hover { color: var(--text); border-color: var(--stroke-2); }
+.replay svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+.scroll-cue { margin-top: 26px; font-size: 14px; color: var(--muted); display: inline-flex; align-items: center; gap: 8px; }
+.scroll-cue svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; animation: bob 1.8s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(4px); } }
 
-@media (max-width: 620px) {
-  .timeline { grid-template-columns: minmax(0, 1fr); }
-  .tl-left { display: none; }
-  .keys { display: none; }
-  .tc { font-size: 17px; }
+/* ---------- Value props ---------- */
+.props { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; padding: 50px 0 20px; }
+.prop { border-radius: 22px; padding: 24px; background: var(--surface); border: 1px solid var(--stroke); }
+.prop .ic { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; margin-bottom: 14px; }
+.prop .ic svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.prop h4 { margin: 0 0 6px; font-size: 19px; font-weight: 600; }
+.prop p { margin: 0; color: var(--dim); font-size: 16px; }
+
+/* ---------- Install ---------- */
+.install { padding: 60px 0 30px; display: grid; gap: 22px; }
+.install-card { border-radius: 28px; padding: 34px; background: linear-gradient(135deg, rgba(91, 63, 224, .16), rgba(31, 143, 125, .12)); border: 1px solid var(--stroke-2); display: grid; gap: 18px; }
+.install-card h2 { margin: 0; font-family: var(--f-display); font-weight: 820; font-size: clamp(30px, 4vw, 48px); line-height: 1.04; }
+.install-card > p { margin: 0; color: var(--dim); font-size: 18px; }
+.copy { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: center; background: rgba(8, 8, 14, .7); border: 1px solid var(--stroke-2); border-radius: 16px; padding: 16px 18px; }
+.copy code { font-family: var(--f-mono); font-size: 14.5px; line-height: 1.65; color: var(--text); white-space: pre-wrap; word-break: break-word; min-width: 0; }
+.copy code .pr { color: var(--agent); }
+.copy button { font-weight: 600; font-size: 14.5px; color: #0c1f0f; background: linear-gradient(180deg, #7fd987, #57b860); border: 0; border-radius: 999px; padding: 9px 16px; cursor: pointer; }
+.steps3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; counter-reset: s; }
+.steps3 li { counter-increment: s; padding: 14px 16px; border-radius: 16px; background: rgba(255, 255, 255, .05); border: 1px solid var(--stroke); font-size: 15.5px; color: var(--dim); }
+.steps3 li::before { content: counter(s); display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: 10px; border-radius: 50%; background: var(--surface-2); color: var(--text); font-family: var(--f-mono); font-size: 13px; }
+.steps3 code { font-family: var(--f-mono); font-size: 14px; color: var(--text); }
+.links { display: flex; flex-wrap: wrap; gap: 22px; font-size: 15.5px; }
+footer { padding: 30px 0 60px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--stroke); margin-top: 40px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; }
+
+@media (max-width: 900px) {
+  .feature { min-height: auto; padding: 56px 0; }
+  .fcol { gap: 20px; }
+  .stage-box { border-radius: 12px; }
+  .props, .steps3 { grid-template-columns: minmax(0, 1fr); }
+  .top nav a:not(.gh) { display: none; }
+  .brand { white-space: nowrap; font-size: 16px; }
 }
-
-/* ---------- The composition (1280 x 720) ---------- */
-.stage { position: absolute; left: 0; top: 0; width: 1280px; height: 720px; transform-origin: 0 0; overflow: hidden; background: radial-gradient(120% 90% at 18% 8%, var(--comp-bg2), var(--comp-bg) 62%); color: var(--ink); font-family: var(--f-ui); }
-.leak { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .5; mix-blend-mode: screen; pointer-events: none; }
-.leak.a { width: 560px; height: 560px; left: -160px; top: -200px; background: radial-gradient(circle, #5a3fd8 0%, rgba(90, 63, 216, 0) 70%); }
-.leak.b { width: 640px; height: 640px; right: -220px; bottom: -280px; background: radial-gradient(circle, #1d7f70 0%, rgba(29, 127, 112, 0) 70%); }
-.grain { position: absolute; inset: -40%; pointer-events: none; opacity: .1; mix-blend-mode: overlay; z-index: 20;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain .48s steps(4) infinite; }
-@keyframes grain { 0% { transform: translate(0, 0); } 25% { transform: translate(-3%, 2%); } 50% { transform: translate(2%, -3%); } 75% { transform: translate(-2%, 3%); } 100% { transform: translate(0, 0); } }
-.safe { position: absolute; inset: 36px 64px; border: 1px dashed rgba(255, 255, 255, .06); pointer-events: none; z-index: 19; }
-
-.scene { position: absolute; inset: 0; padding: 56px 80px; display: flex; flex-direction: column; gap: 22px; visibility: hidden; }
-.eyebrow { font-family: var(--f-mono); font-size: 15px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-dim); margin: 0; }
-.eyebrow b { color: var(--ink); font-weight: 600; margin-right: 12px; }
-.head { font-family: var(--f-display); font-weight: 780; font-variation-settings: "wdth" 100; font-size: 54px; line-height: 1.02; letter-spacing: -.01em; margin: 0; }
-.cap { position: absolute; left: 80px; bottom: 46px; margin: 0; font-size: 21px; color: var(--ink-dim); max-width: 760px; line-height: 1.4; }
-.cap b { color: var(--ink); font-weight: 600; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .aurora i, .scroll-cue svg, .cnav.next.ready { animation: none; }
+  .fhead { opacity: 1; transform: none; transition: none; }
+}
+</style>
+<style>
+/* ---------- The stage: one 760 x 540 scene, scaled to fit ---------- */
+.stage { position: absolute; left: 0; top: 0; width: 760px; height: 540px; transform-origin: 0 0; overflow: hidden; background: radial-gradient(120% 90% at 18% 8%, #1e1c3a, #141327 62%); color: var(--ink); font-family: var(--f-ui); font-size: 17px; line-height: 1.4; }
+.leak { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .45; pointer-events: none; }
+.leak.a { width: 420px; height: 420px; left: -140px; top: -170px; background: radial-gradient(circle, #5a3fd8 0%, rgba(90, 63, 216, 0) 70%); }
+.leak.b { width: 480px; height: 480px; right: -180px; bottom: -220px; background: radial-gradient(circle, #1d7f70 0%, rgba(29, 127, 112, 0) 70%); }
+.v { position: absolute; inset: 0; padding: 30px 28px; }
 .mono { font-family: var(--f-mono); }
 .type { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom; width: 0; }
 .cur { display: inline-block; width: .55ch; height: 1.05em; background: var(--ink); vertical-align: -.16em; margin-left: 3px; animation: blink 1s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
 
-/* Scene 0: title */
-.s-title { justify-content: center; gap: 18px; }
-.mega { margin: 0; font-family: var(--f-display); line-height: .9; letter-spacing: -.02em; }
-.mask { display: block; overflow: hidden; padding-bottom: .04em; }
-.mask > span { display: inline-block; }
-.m1 { font-size: 118px; font-weight: 820; font-variation-settings: "wdth" 100, "wght" 820; }
-.m2row { display: flex; align-items: center; gap: 26px; }
-.m2row .mask { padding-bottom: .2em; margin-bottom: -.16em; }
-.m2 { font-size: 236px; font-weight: 900; font-variation-settings: "wdth" 125, "wght" 900; color: transparent; -webkit-text-stroke: 3px var(--agent); background: linear-gradient(90deg, var(--agent), #9fe3a4); -webkit-background-clip: text; background-clip: text; background-size: 0% 100%; background-repeat: no-repeat; }
-.loopmark { width: 150px; height: 150px; flex: none; }
-.loopmark path { fill: none; stroke: var(--human); stroke-width: 10; stroke-linecap: round; }
-.loopmark .head-tri { fill: var(--human); stroke: none; }
-.rule path { stroke: var(--ink-dim); stroke-width: 2; fill: none; }
-.sub { font-size: 28px; color: var(--ink-dim); margin: 0; }
-.sub b { color: var(--ink); font-weight: 500; }
-
-/* Shared pieces */
-.row { display: flex; gap: 56px; align-items: flex-start; }
-.term { width: 640px; flex: none; background: #0e0d1a; border: 1px solid #2c2a47; border-radius: 12px; box-shadow: 0 30px 80px rgba(0, 0, 0, .45); }
+/* Terminal and chips */
+.term { background: #0e0d1a; border: 1px solid #2c2a47; border-radius: 12px; box-shadow: 0 24px 60px rgba(0, 0, 0, .45); }
 .term-bar { height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-bottom: 1px solid #26243e; }
 .term-bar i { width: 11px; height: 11px; border-radius: 50%; background: #3a3858; }
-.term-bar span { margin-left: auto; font-family: var(--f-mono); font-size: 12px; color: var(--ink-dim); }
-.term-body { padding: 18px 22px; font-family: var(--f-mono); font-size: 17px; line-height: 1.75; }
+.term-bar span { margin-left: auto; font-family: var(--f-mono); font-size: 13px; color: var(--ink-dim); }
+.term-body { padding: 16px 20px; font-family: var(--f-mono); font-size: 18px; line-height: 1.8; }
 .term-body p { margin: 0; white-space: nowrap; }
 .term-body .pr { color: var(--agent); display: inline-block; width: 1.4ch; }
 .term-body .out { color: var(--ink-dim); }
 .term-body .ok { color: var(--agent); }
-.chips { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-.chip { font-family: var(--f-mono); font-size: 16px; padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(98, 196, 107, .5); background: rgba(98, 196, 107, .1); color: #dff5e1; width: max-content; }
+.chips-label { margin: 24px 0 10px; font-family: var(--f-mono); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-dim); }
+.chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.chip { font-family: var(--f-mono); font-size: 16px; padding: 7px 13px; border-radius: 999px; border: 1px solid rgba(98, 196, 107, .5); background: rgba(98, 196, 107, .1); color: #dff5e1; }
 .chip.init { border-color: rgba(111, 142, 246, .55); background: rgba(111, 142, 246, .13); color: #e1e7ff; }
-.chips-label { font-family: var(--f-mono); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-dim); margin: 0 0 4px; }
 
-.page { background: var(--paper); color: var(--paper-ink); border-radius: 14px; padding: 24px 28px; box-shadow: 0 40px 90px rgba(0, 0, 0, .45); }
-.pg-top { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--paper-dim); }
+/* Set up */
+.cmd-line { margin: 0 0 22px; font-family: var(--f-mono); font-size: 28px; }
+.cmd-line .pr { color: var(--agent); margin-right: 12px; }
+.cols3 { display: grid; grid-template-columns: 190px 290px 172px; gap: 26px; align-items: start; }
+.col-h { margin: 0 0 12px; font-family: var(--f-mono); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-dim); }
+.tree { font-family: var(--f-mono); font-size: 16.5px; line-height: 1.9; }
+.tree p { margin: 0; }
+.tree .d { color: var(--remote); }
+.tree .g { color: var(--ink-dim); margin-left: 8px; font-size: 12.5px; }
+.dbs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.db-card { background: var(--paper); color: var(--paper-ink); border-radius: 12px; padding: 14px; display: grid; gap: 4px; box-shadow: 0 16px 40px rgba(0, 0, 0, .35); }
+.db-card b { font-family: var(--f-display); font-size: 19px; font-weight: 760; font-variation-settings: "wdth" 94; }
+.db-card span { font-size: 13px; color: var(--paper-dim); line-height: 1.3; }
+.clis { display: grid; gap: 14px; }
+.cli { display: flex; align-items: center; gap: 10px; font-family: var(--f-mono); font-size: 18px; }
+.cli svg { width: 22px; height: 22px; flex: none; }
+.cli path { fill: none; stroke: var(--agent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.cli em { font-style: normal; color: var(--ink-dim); font-size: 13px; }
+.setup-grid { display: grid; grid-template-columns: 452px 224px; gap: 28px; align-items: start; }
+.ftree { background: #0e0d1a; border: 1px solid #2c2a47; border-radius: 12px; box-shadow: 0 24px 60px rgba(0, 0, 0, .45); overflow: hidden; }
+.ftree-bar { display: flex; justify-content: space-between; padding: 8px 14px; border-bottom: 1px solid #26243e; font-family: var(--f-mono); font-size: 12.5px; color: var(--ink-dim); letter-spacing: .08em; text-transform: uppercase; }
+.ftree-body { padding: 10px 14px 12px; font-family: var(--f-mono); font-size: 14.5px; line-height: 1.62; }
+.tl { margin: 0; white-space: pre; }
+.tg { color: #4b4870; }
+.td { color: #8fb0ff; }
+.tf { color: var(--ink); }
+.tn { color: var(--ink-dim); font-family: var(--f-ui); font-size: 12.5px; margin-left: 10px; }
+.setup-side .dbs { gap: 8px; }
+.setup-side .db-card { padding: 10px 11px; border-radius: 10px; gap: 2px; }
+.setup-side .db-card b { font-size: 16px; }
+.setup-side .db-card span { font-size: 12px; }
+.tools-h { margin-top: 18px !important; }
+.setup-side .clis { gap: 9px; }
+.setup-side .cli { font-size: 16px; }
+.note-line { position: absolute; left: 28px; right: 28px; bottom: 26px; margin: 0; font-size: 17px; color: var(--ink-dim); }
+.note-line b { color: var(--ink); font-weight: 600; }
+
+/* Notion-like pages */
+.split { display: grid; grid-template-columns: 456px 220px; gap: 28px; align-items: start; }
+.page { background: var(--paper); color: var(--paper-ink); border-radius: 14px; padding: 20px 22px; box-shadow: 0 30px 70px rgba(0, 0, 0, .45); }
+.pg-top { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 14px; color: var(--paper-dim); }
 .pg-top .db { font-weight: 600; }
-.pg-title { font-family: var(--f-display); font-weight: 760; font-variation-settings: "wdth" 96; font-size: 34px; line-height: 1.1; margin: 10px 0 14px; }
-.callout { background: #ebf1fe; border-radius: 10px; padding: 12px 16px; display: grid; gap: 4px; font-size: 16px; }
+.pg-title { font-family: var(--f-display); font-weight: 760; font-variation-settings: "wdth" 94; font-size: 25px; line-height: 1.12; margin: 10px 0 12px; }
+.callout { background: #ebf1fe; border-radius: 10px; padding: 10px 14px; display: grid; gap: 3px; font-size: 15px; }
 .callout p { margin: 0; }
-.callout b { display: inline-block; width: 120px; color: #3a5bc7; font-weight: 600; }
-table.mini { border-collapse: collapse; width: 100%; margin-top: 14px; font-size: 15px; font-variant-numeric: tabular-nums; }
-table.mini th, table.mini td { border-bottom: 1px solid var(--paper-line); padding: 6px 8px; text-align: left; white-space: nowrap; }
-table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 13px; }
-.tbl-cap { font-size: 13px; font-weight: 600; color: var(--paper-ink); margin: 14px 0 0; }
-
-.pill { position: relative; display: inline-grid; overflow: hidden; height: 24px; border-radius: 6px; font-size: 13px; font-weight: 600; vertical-align: middle; }
+.callout b { display: inline-block; width: 112px; color: #3a5bc7; font-weight: 600; }
+table.mini { border-collapse: collapse; width: 100%; margin-top: 10px; font-size: 14.5px; font-variant-numeric: tabular-nums; }
+table.mini th, table.mini td { border-bottom: 1px solid var(--paper-line); padding: 6px 7px; text-align: left; white-space: nowrap; }
+table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
+.tbl-cap { font-size: 13.5px; font-weight: 600; margin: 14px 0 0; }
+.pill { display: inline-grid; height: 24px; border-radius: 6px; font-size: 13px; font-weight: 600; vertical-align: middle; overflow: hidden; }
 .pill > span { grid-area: 1 / 1; display: flex; align-items: center; padding: 0 9px; border-radius: 6px; }
 .st-backlog { background: #e9e7e1; color: #5d5a6b; }
 .st-testing { background: #dde7ff; color: #2f4fb3; }
@@ -182,1033 +250,984 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 13px; }
 .st-finish { background: #dff3e1; color: #237a2c; }
 .st-review { background: #fff1c9; color: #8a6a07; }
 .st-confirmed { background: #dff3e1; color: #237a2c; }
+.stamp { display: inline-block; border: 3px solid currentColor; border-radius: 8px; padding: 5px 12px; font-family: var(--f-display); font-weight: 820; font-variation-settings: "wdth" 110; font-size: 17px; letter-spacing: .05em; text-transform: uppercase; }
 
-.gate { position: relative; display: grid; gap: 16px; justify-items: start; padding: 22px 24px; width: 330px; flex: none; border: 1.5px solid rgba(185, 165, 255, .6); background: rgba(185, 165, 255, .1); border-radius: 16px; }
-.gate .who { font-family: var(--f-mono); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--human); margin: 0; }
-.gate p.what { font-size: 21px; line-height: 1.3; margin: 0; color: #eee8ff; }
-.check { position: relative; display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: #fff; }
-.box { width: 28px; height: 28px; border-radius: 6px; border: 2px solid var(--human); display: grid; place-items: center; background: rgba(185, 165, 255, .08); }
-.box svg { width: 20px; height: 20px; }
-.box path { fill: none; stroke: var(--human); stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
-.cursor { position: absolute; left: 14px; top: 14px; width: 26px; height: 30px; z-index: 6; pointer-events: none; }
-.cursor path { fill: #fff; stroke: #15132b; stroke-width: 1.6; stroke-linejoin: round; }
-.ripple { position: absolute; left: 0; top: 0; width: 44px; height: 44px; margin: -8px 0 0 -8px; border-radius: 50%; border: 2px solid #fff; opacity: 0; pointer-events: none; }
+/* The human gate */
+.gate { display: grid; gap: 14px; padding: 16px; border: 1.5px solid rgba(185, 165, 255, .6); background: rgba(185, 165, 255, .1); border-radius: 16px; }
+.gate .who { margin: 0; font-family: var(--f-mono); font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--human); }
+.gate .what { margin: 0; font-size: 19px; line-height: 1.3; color: #eee8ff; }
+.approve { display: flex; align-items: center; gap: 10px; padding: 10px 11px; border-radius: 10px; border: 1.5px solid rgba(185, 165, 255, .55); background: rgba(185, 165, 255, .06); color: #fff; font-family: var(--f-ui); font-size: 16px; white-space: nowrap; font-weight: 600; cursor: default; text-align: left; }
+.approve .box { width: 26px; height: 26px; flex: none; border-radius: 6px; border: 2px solid var(--human); display: grid; place-items: center; }
+.approve .box svg { width: 19px; height: 19px; }
+.approve .box path { fill: none; stroke: var(--human); stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+.approve.armed { cursor: pointer; animation: ask 1.4s ease-in-out infinite; }
+.approve.armed:hover { background: rgba(185, 165, 255, .2); }
+.approve.done { border-color: var(--human); background: rgba(185, 165, 255, .18); animation: none; }
+.approve.done .box path { opacity: 1; }
+@keyframes ask { 0%, 100% { box-shadow: 0 0 0 0 rgba(185, 165, 255, .6); } 50% { box-shadow: 0 0 0 9px rgba(185, 165, 255, 0); } }
+.click-me { margin: -4px 0 0; font-size: 14.5px; color: var(--human); }
+.result { margin: 0; font-size: 15.5px; color: #dff5e1; line-height: 1.35; }
 
-.stamp { display: inline-block; border: 3px solid currentColor; border-radius: 8px; padding: 6px 14px; font-family: var(--f-display); font-weight: 820; font-variation-settings: "wdth" 110; font-size: 22px; letter-spacing: .05em; text-transform: uppercase; }
-
-/* Scene 2: set up */
-.cols3 { display: grid; grid-template-columns: 300px 400px 300px; gap: 40px; align-items: start; }
-.col-h { font-family: var(--f-mono); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-dim); margin: 0 0 12px; }
-.tree { font-family: var(--f-mono); font-size: 17px; line-height: 1.85; }
-.tree p { margin: 0; }
-.tree .d { color: var(--remote); }
-.tree .f { color: var(--ink); }
-.tree .g { color: var(--ink-dim); margin-left: 10px; font-size: 13px; }
-.dbs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.db-card { background: var(--paper); color: var(--paper-ink); border-radius: 12px; padding: 16px; display: grid; gap: 6px; box-shadow: 0 20px 50px rgba(0, 0, 0, .35); }
-.db-card b { font-family: var(--f-display); font-size: 21px; font-weight: 760; font-variation-settings: "wdth" 96; }
-.db-card span { font-size: 13px; color: var(--paper-dim); }
-.clis { display: grid; gap: 12px; }
-.cli { display: flex; align-items: center; gap: 12px; font-family: var(--f-mono); font-size: 18px; }
-.cli svg { width: 22px; height: 22px; flex: none; }
-.cli path { fill: none; stroke: var(--agent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.cli em { font-style: normal; color: var(--ink-dim); font-size: 14px; }
-.cmd-line { font-family: var(--f-mono); font-size: 34px; color: var(--ink); }
-.cmd-line .pr { color: var(--agent); margin-right: 14px; }
-
-/* Scene 3 and 4 */
-.split { display: flex; gap: 56px; align-items: flex-start; }
-.p-idea { width: 660px; flex: none; }
-.p-exp { width: 680px; flex: none; }
-.budget { margin-top: 16px; display: grid; gap: 8px; }
-.budget-h { display: flex; justify-content: space-between; font-size: 14px; color: var(--paper-dim); font-variant-numeric: tabular-nums; }
+/* Plan */
+.budget { margin-top: 14px; display: grid; gap: 8px; }
+.budget-h { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--paper-dim); }
 .budget-h b { color: var(--paper-ink); }
-.track { position: relative; height: 16px; border-radius: 8px; background: #ebe8e1; overflow: hidden; }
-.track i { position: absolute; left: 0; top: 0; bottom: 0; width: 5%; background: linear-gradient(90deg, #4c8f52, var(--agent)); transform-origin: left; border-radius: 8px; }
-.fit-row { display: flex; align-items: center; gap: 16px; margin-top: 4px; }
-.p-exp .stamp { color: #2f8a37; font-size: 18px; }
+.track { position: relative; height: 14px; border-radius: 7px; background: #ebe8e1; overflow: hidden; }
+.track i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: linear-gradient(90deg, #4c8f52, var(--agent)); border-radius: 7px; }
+.fit-row { display: flex; align-items: center; gap: 14px; margin-top: 2px; }
+.fit-row .stamp { color: #2f8a37; font-size: 15px; }
 .smoke { font-size: 14px; color: #237a2c; font-weight: 600; }
-.idea-ref { font-size: 13px; color: var(--paper-dim); display: flex; gap: 8px; align-items: center; }
 
-/* Scene 5: run */
-.runwrap { display: grid; grid-template-columns: 470px 1fr; gap: 44px; align-items: start; }
-.panes { display: grid; gap: 14px; }
-.stage-tag { position: relative; display: inline-grid; overflow: hidden; height: 30px; font-family: var(--f-mono); font-size: 15px; }
-.stage-tag > span { grid-area: 1 / 1; display: flex; align-items: center; padding: 0 12px; border-radius: 6px; background: rgba(111, 142, 246, .16); border: 1px solid rgba(111, 142, 246, .5); color: #dfe6ff; }
-.pane { background: #0e0d1a; border: 1px solid #2c2a47; border-radius: 10px; padding: 14px 16px; font-family: var(--f-mono); font-size: 15px; }
+/* Run */
+.runwrap { display: grid; grid-template-columns: 300px 376px; gap: 28px; align-items: start; }
+.panes { display: grid; gap: 12px; }
+.stage-tag { justify-self: start; font-family: var(--f-mono); font-size: 14px; padding: 5px 10px; border-radius: 6px; background: rgba(111, 142, 246, .16); border: 1px solid rgba(111, 142, 246, .5); color: #dfe6ff; }
+.pane { background: #0e0d1a; border: 1px solid #2c2a47; border-radius: 10px; padding: 12px 14px; font-family: var(--f-mono); font-size: 14.5px; }
 .pane-h { display: flex; justify-content: space-between; color: var(--ink-dim); }
 .pane-h b { color: var(--ink); font-weight: 600; }
-.bar { height: 9px; background: #24223d; border-radius: 5px; overflow: hidden; margin-top: 12px; }
+.bar { height: 9px; background: #24223d; border-radius: 5px; overflow: hidden; margin-top: 10px; }
 .bar i { display: block; height: 100%; width: 100%; background: var(--agent); transform-origin: left; transform: scaleX(0); }
 .bar.base i { background: #8c89b8; }
-.goon { font-family: var(--f-mono); font-size: 15px; color: var(--agent); }
-.chart { position: relative; }
+.goon { margin: 0; font-family: var(--f-mono); font-size: 14px; color: var(--agent); }
+.report { position: absolute; left: 28px; width: 300px; padding: 10px 12px; border-radius: 10px; background: #f6f5f1; color: var(--paper-ink); box-shadow: 0 16px 40px rgba(0, 0, 0, .4); font-size: 13.5px; line-height: 1.4; }
+.report b { display: block; font-size: 12.5px; color: var(--paper-dim); font-weight: 600; margin-bottom: 2px; }
+.report.r1 { top: 318px; }
+.report.r2 { top: 412px; }
 .chart svg { display: block; }
 .chart .axis { stroke: #3a3858; stroke-width: 1.5; }
 .chart .grid { stroke: #252342; stroke-width: 1; }
-.chart .lbl { fill: var(--ink-dim); font-family: var(--f-mono); font-size: 13px; }
-.chart .c-base { fill: none; stroke: #8c89b8; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.chart .c-alt { fill: none; stroke: var(--agent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.legend { display: flex; gap: 18px; font-size: 14px; color: var(--ink-dim); margin-top: 8px; }
-.legend i { display: inline-block; width: 18px; height: 3px; vertical-align: middle; margin-right: 6px; border-radius: 2px; }
-.status-row { display: flex; align-items: center; gap: 16px; margin-top: 14px; }
-.status-row .label { font-size: 15px; color: var(--ink-dim); }
-.outcome { color: var(--agent); }
+.chart .lbl { fill: var(--ink-dim); font-family: var(--f-mono); font-size: 12.5px; }
+.chart .c-base { fill: none; stroke: #8c89b8; stroke-width: 3; stroke-linecap: round; }
+.chart .c-alt { fill: none; stroke: var(--agent); stroke-width: 3; stroke-linecap: round; }
+.legend { display: flex; gap: 16px; font-size: 13.5px; color: var(--ink-dim); margin-top: 6px; }
+.legend i { display: inline-block; width: 16px; height: 3px; vertical-align: middle; margin-right: 6px; border-radius: 2px; }
+.status-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 14px; }
+.status-row .label { font-size: 14.5px; color: var(--ink-dim); }
+.outcome { color: var(--agent); font-size: 15px; }
 
-/* Scene 6: analyze */
-.anwrap { display: grid; grid-template-columns: 520px 1fr; gap: 56px; align-items: start; }
-.barchart { position: relative; height: 330px; border-left: 2px solid #3a3858; border-bottom: 2px solid #3a3858; margin: 10px 0 0 54px; }
-.yl { position: absolute; left: -54px; font-family: var(--f-mono); font-size: 13px; color: var(--ink-dim); transform: translateY(50%); }
+/* Analyze */
+.anwrap { display: grid; grid-template-columns: 290px 386px; gap: 28px; align-items: start; }
+.barchart { position: relative; height: 250px; margin: 18px 0 0 46px; border-left: 2px solid #3a3858; border-bottom: 2px solid #3a3858; }
+.yl { position: absolute; left: -46px; font-family: var(--f-mono); font-size: 12.5px; color: var(--ink-dim); transform: translateY(50%); }
 .gl { position: absolute; left: 0; right: 0; height: 1px; background: #252342; }
-.bc { position: absolute; bottom: 0; width: 120px; transform-origin: bottom; border-radius: 6px 6px 0 0; }
-.bc.base { left: 70px; height: 132px; background: #8c89b8; }
-.bc.alt { left: 260px; height: 226px; background: var(--agent); }
+.bc { position: absolute; bottom: 0; width: 80px; transform-origin: bottom; border-radius: 6px 6px 0 0; }
+.bc.base { left: 34px; height: 100px; background: #8c89b8; }
+.bc.alt { left: 148px; height: 171px; background: var(--agent); }
 .eb { position: absolute; width: 2px; background: var(--ink); }
-.eb::before, .eb::after { content: ""; position: absolute; left: -9px; width: 20px; height: 2px; background: var(--ink); }
+.eb::before, .eb::after { content: ""; position: absolute; left: -7px; width: 16px; height: 2px; background: var(--ink); }
 .eb::before { top: 0; } .eb::after { bottom: 0; }
-.bv { position: absolute; font-family: var(--f-mono); font-size: 18px; font-weight: 600; width: 120px; text-align: center; }
-.xl { position: absolute; bottom: -30px; width: 120px; text-align: center; font-family: var(--f-mono); font-size: 15px; color: var(--ink-dim); }
-.t1 { background: var(--paper); color: var(--paper-ink); border-radius: 12px; padding: 18px 20px; box-shadow: 0 30px 70px rgba(0, 0, 0, .4); }
-.t1 .tbl-cap { margin: 0 0 8px; }
-.t1 td.best { font-weight: 700; }
-.decide { display: flex; align-items: center; gap: 22px; margin-top: 30px; }
-.diamond { position: relative; width: 118px; height: 118px; display: grid; place-items: center; flex: none; }
-.diamond div { width: 84px; height: 84px; transform: rotate(45deg); border: 2px solid #8a8a9a; background: rgba(255, 255, 255, .05); }
-.diamond span { position: absolute; inset: 0; display: grid; place-items: center; font-size: 15px; text-align: center; line-height: 1.2; padding: 0 14px; }
-.decide .yes { font-size: 19px; color: var(--agent); max-width: 290px; line-height: 1.3; }
-.decide svg path { fill: none; stroke: var(--agent); stroke-width: 3; stroke-linecap: round; }
+.bv { position: absolute; width: 80px; text-align: center; font-family: var(--f-mono); font-size: 17px; font-weight: 600; }
+.xl { position: absolute; bottom: -28px; width: 80px; text-align: center; font-family: var(--f-mono); font-size: 14px; color: var(--ink-dim); }
+.res-table { background: var(--paper); color: var(--paper-ink); border-radius: 12px; padding: 16px 18px; box-shadow: 0 24px 60px rgba(0, 0, 0, .4); }
+.res-table .tbl-cap { margin: 0 0 4px; line-height: 1.35; }
+.res-table td.best { font-weight: 700; }
+.decide-row { display: flex; align-items: center; gap: 16px; margin-top: 26px; }
+.diamond { position: relative; width: 104px; height: 104px; display: grid; place-items: center; flex: none; }
+.diamond div { width: 74px; height: 74px; transform: rotate(45deg); border: 2px solid #8a8a9a; background: rgba(255, 255, 255, .05); }
+.diamond span { position: absolute; inset: 0; display: grid; place-items: center; font-size: 14px; text-align: center; line-height: 1.2; padding: 0 16px; }
+.decide-row svg path { fill: none; stroke: var(--agent); stroke-width: 3; stroke-linecap: round; }
+.decide-row .yes { font-size: 17px; color: var(--agent); line-height: 1.3; }
 
-/* Scene 7: finding */
-.p-find { width: 640px; flex: none; }
-.p-find .one { font-size: 19px; line-height: 1.5; margin: 0; }
-.closed { color: var(--agent); margin-top: 22px; }
+/* Finding */
+.one { margin: 0; font-size: 17px; line-height: 1.5; }
+.closed { color: var(--agent); margin-top: 18px; }
 
-/* Scene 8: Notion board */
-.nwin { background: #ffffff; color: #37352f; border-radius: 12px; padding: 16px 24px 20px; box-shadow: 0 40px 90px rgba(0, 0, 0, .45); }
-.nw-top { display: flex; gap: 8px; font-size: 13px; color: #9b9a97; }
-.nw-top .sep { color: #c7c6c2; }
-.nw-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-top: 8px; border-bottom: 1px solid #ebeae6; }
-.nw-title { margin: 0 0 8px; font-family: var(--f-ui); font-weight: 700; font-size: 30px; color: #37352f; }
-.nw-tabs { display: flex; align-items: center; gap: 18px; font-size: 14px; color: #787774; padding-bottom: 8px; }
+/* Board */
+.nwin { background: #fff; color: #37352f; border-radius: 12px; padding: 14px 18px 16px; box-shadow: 0 30px 70px rgba(0, 0, 0, .45); }
+.nw-top { display: flex; gap: 8px; font-size: 12.5px; color: #9b9a97; }
+.nw-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-top: 6px; border-bottom: 1px solid #ebeae6; }
+.nw-title { margin: 0 0 8px; font-weight: 700; font-size: 25px; }
+.nw-tabs { display: flex; gap: 14px; font-size: 13px; color: #787774; padding-bottom: 8px; }
 .nw-tabs .on { color: #37352f; font-weight: 600; box-shadow: 0 10px 0 -8px #37352f; }
-.nw-tabs .nw-new { background: #2383e2; color: #fff; font-weight: 600; padding: 3px 10px; border-radius: 4px; }
-.kb { position: relative; width: 1038px; height: 376px; margin-top: 14px; }
-.kcol { position: absolute; top: 0; width: 330px; display: flex; align-items: center; gap: 8px; }
+.kb { position: relative; width: 668px; height: 352px; margin-top: 12px; }
+.kcol { position: absolute; top: 0; display: flex; align-items: center; gap: 8px; }
 .kh { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; font-size: 13px; font-weight: 600; }
-.cnt, .pnum { display: inline-grid; }
-.cnt > span, .pnum > span { grid-area: 1 / 1; }
-.cnt > span + span, .pnum > span + span { visibility: hidden; }
-.cnt { color: #9b9a97; font-size: 14px; font-variant-numeric: tabular-nums; }
-.kcard { position: absolute; left: 0; top: 0; width: 330px; height: 100px; background: #fff; border-radius: 6px; box-shadow: 0 0 0 1px rgba(15, 15, 15, .09), 0 2px 5px rgba(15, 15, 15, .08); padding: 10px 12px; display: grid; align-content: start; gap: 5px; font-size: 13px; color: #37352f; }
+.cnt { color: #9b9a97; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.kcard { position: absolute; left: 0; top: 0; width: 212px; height: 88px; background: #fff; border-radius: 6px; box-shadow: 0 0 0 1px rgba(15, 15, 15, .09), 0 2px 5px rgba(15, 15, 15, .08); padding: 8px 10px; display: grid; align-content: start; gap: 4px; font-size: 12px; }
 .kcard p { margin: 0; min-width: 0; }
-.kt { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 54px; }
-.ki { display: flex; align-items: center; gap: 6px; color: #787774; font-size: 12.5px; }
-.ki svg { width: 11px; height: 13px; flex: none; }
-.ki path { fill: none; stroke: #9b9a97; stroke-width: 1.3; }
-.kp { display: flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 12px; }
+.kt { font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 40px; }
+.ki { color: #787774; font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kp { display: flex; align-items: center; gap: 6px; font-family: var(--f-mono); font-size: 11px; }
 .pbar { position: relative; display: inline-block; width: 10ch; white-space: nowrap; }
 .pb-bg { color: #dcdad5; }
 .pb-fg { position: absolute; left: 0; top: 0; overflow: hidden; white-space: nowrap; color: #37352f; }
-.pnum { color: #37352f; font-variant-numeric: tabular-nums; }
-.km { display: flex; align-items: center; gap: 14px; color: #787774; font-size: 12px; }
-.hap { display: inline-flex; align-items: center; gap: 6px; }
-.cb { width: 13px; height: 13px; border-radius: 3px; border: 1.5px solid #9b9a97; display: grid; place-items: center; }
-.cb svg { width: 11px; height: 11px; }
+.km { display: flex; align-items: center; gap: 10px; color: #787774; font-size: 11px; }
+.hap { display: inline-flex; align-items: center; gap: 5px; }
+.cb { width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid #9b9a97; display: grid; place-items: center; }
+.cb svg { width: 10px; height: 10px; }
 .cb path { fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .hap.on .cb { background: #2383e2; border-color: #2383e2; }
-.oc { position: absolute; top: 10px; right: 10px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: #dbeddb; color: #1c3829; visibility: hidden; }
-.oc.on { visibility: visible; }
+.oc { position: absolute; top: 8px; right: 8px; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 4px; background: #dbeddb; color: #1c3829; visibility: hidden; }
 
-/* Scene 9: review */
-.revwrap { display: grid; grid-template-columns: 600px 1fr; gap: 50px; align-items: start; }
-.p-rev p { font-size: 21px; line-height: 1.75; margin: 0; }
-.mk { background-repeat: no-repeat; background-size: 0% 100%; border-radius: 4px; padding: 1px 3px; }
+/* Review */
+.revwrap { display: grid; grid-template-columns: 410px 266px; gap: 28px; align-items: start; }
+.p-rev p.txt { margin: 0; font-size: 19px; line-height: 1.8; }
+.mk { background-repeat: no-repeat; background-size: 0% 100%; border-radius: 4px; padding: 1px 3px; border: 0; font: inherit; color: inherit; cursor: default; }
 .mk.r { background-image: linear-gradient(rgba(239, 100, 97, .38), rgba(239, 100, 97, .38)); }
-.mk.o { background-image: linear-gradient(rgba(243, 155, 61, .4), rgba(243, 155, 61, .4)); }
+.mk.o { background-image: linear-gradient(rgba(243, 155, 61, .42), rgba(243, 155, 61, .42)); }
 .mk.p { background-image: linear-gradient(rgba(150, 120, 255, .36), rgba(150, 120, 255, .36)); }
-.legend3 { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
-.legend3 span { font-size: 14px; font-weight: 600; padding: 4px 10px; border-radius: 6px; }
+.mk.armed { cursor: pointer; outline: 2px dashed rgba(31, 29, 43, .45); outline-offset: 2px; }
+.mk.answered { outline: 0; }
+.legend3 { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.legend3 span { font-size: 13px; font-weight: 600; padding: 3px 9px; border-radius: 6px; }
 .lg-r { background: rgba(239, 100, 97, .18); color: #b3302d; }
 .lg-o { background: rgba(243, 155, 61, .2); color: #9c560d; }
 .lg-p { background: rgba(150, 120, 255, .18); color: #5b40c4; }
-.replies { display: grid; gap: 16px; }
-.reply { border-radius: 12px; padding: 14px 16px; background: rgba(98, 196, 107, .1); border: 1px solid rgba(98, 196, 107, .45); }
-.reply .tag { font-family: var(--f-mono); font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; }
-.reply p { margin: 4px 0 0; font-size: 18px; line-height: 1.35; color: #eaf7eb; }
+.replies { display: grid; gap: 12px; }
+.reply { border-radius: 12px; padding: 12px 14px; background: rgba(98, 196, 107, .1); border: 1px solid rgba(98, 196, 107, .45); visibility: hidden; }
+.reply .tag { font-family: var(--f-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+.reply p { margin: 4px 0 0; font-size: 15.5px; line-height: 1.38; color: #eaf7eb; }
 .tag.r { color: var(--red); } .tag.o { color: var(--orange); } .tag.p { color: var(--human); }
 
-/* Scene 9: remote */
-.remwrap { position: relative; display: grid; grid-template-columns: 300px 1fr 330px; gap: 0; align-items: center; margin-top: 18px; }
-.host { border-radius: 16px; padding: 18px 20px; border: 1.5px solid #3a3858; background: rgba(255, 255, 255, .04); display: grid; gap: 10px; }
-.host h3 { margin: 0; font-family: var(--f-display); font-size: 26px; font-weight: 760; font-variation-settings: "wdth" 96; }
-.host p { margin: 0; font-family: var(--f-mono); font-size: 14.5px; color: var(--ink-dim); line-height: 1.5; }
-.host .win { display: inline-block; font-family: var(--f-mono); font-size: 14px; padding: 4px 10px; border-radius: 6px; background: rgba(98, 196, 107, .14); border: 1px solid rgba(98, 196, 107, .5); color: #dff5e1; margin: 0 6px 6px 0; }
+/* Remote */
+.remwrap { display: grid; grid-template-columns: 214px 1fr 214px; align-items: center; margin-top: 26px; }
+.host { border-radius: 16px; padding: 16px 18px; border: 1.5px solid #3a3858; background: rgba(255, 255, 255, .04); display: grid; gap: 8px; }
+.host h3 { margin: 0; font-family: var(--f-display); font-size: 22px; font-weight: 760; font-variation-settings: "wdth" 96; }
+.host p { margin: 0; font-family: var(--f-mono); font-size: 13.5px; color: var(--ink-dim); line-height: 1.5; }
+.host .win { display: inline-block; font-family: var(--f-mono); font-size: 13px; padding: 3px 9px; border-radius: 6px; background: rgba(98, 196, 107, .14); border: 1px solid rgba(98, 196, 107, .5); color: #dff5e1; margin: 0 6px 6px 0; }
 .host.hpc { border-color: rgba(111, 142, 246, .6); }
 .gpus { display: flex; gap: 6px; }
-.gpus i { width: 34px; height: 18px; border-radius: 3px; background: #2b3a6b; border: 1px solid #4f67b8; }
-.tube { position: relative; height: 150px; }
-.tube .pipe { position: absolute; left: 6px; right: 6px; top: 64px; height: 22px; border-radius: 11px; background: rgba(79, 103, 184, .35); }
-.tube .core { position: absolute; left: 6px; right: 6px; top: 73.5px; height: 3px; border-radius: 2px; background: var(--remote); transform-origin: left; }
-.hbwrap { position: absolute; left: 6px; right: 6px; top: 69px; height: 12px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
-.tube-label { position: absolute; top: 8px; left: 0; right: 0; text-align: center; font-family: var(--f-mono); font-size: 14px; color: #dfe6ff; }
-.hb { position: absolute; top: 0; left: 0; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 0 14px 4px rgba(111, 142, 246, .9); opacity: 0; }
-.packet { position: absolute; top: 102px; left: 0; font-family: var(--f-mono); font-size: 13px; padding: 4px 10px; border-radius: 6px; background: #0e0d1a; border: 1px solid var(--remote); color: #dfe6ff; white-space: nowrap; }
+.gpus i { width: 30px; height: 16px; border-radius: 3px; background: #2b3a6b; border: 1px solid #4f67b8; }
+.tube { position: relative; height: 160px; }
+.tube .pipe { position: absolute; left: 6px; right: 6px; top: 68px; height: 22px; border-radius: 11px; background: rgba(79, 103, 184, .35); }
+.tube .core { position: absolute; left: 6px; right: 6px; top: 77.5px; height: 3px; border-radius: 2px; background: var(--remote); transform-origin: left; }
+.tube-label { position: absolute; top: 18px; left: 0; right: 0; text-align: center; font-family: var(--f-mono); font-size: 14px; color: #dfe6ff; }
+.hbwrap { position: absolute; left: 6px; right: 6px; top: 73px; height: 12px; overflow: hidden; }
+.hb { position: absolute; top: 0; left: 0; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 0 12px 3px rgba(111, 142, 246, .9); opacity: 0; }
+.packet { position: absolute; top: 106px; left: 0; font-family: var(--f-mono); font-size: 13px; padding: 4px 9px; border-radius: 6px; background: #0e0d1a; border: 1px solid var(--remote); color: #dfe6ff; white-space: nowrap; opacity: 0; }
 .packet.back { border-color: var(--agent); color: #dff5e1; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 30px; }
+.fact { border-radius: 12px; padding: 12px 14px; background: rgba(255, 255, 255, .05); border: 1px solid #34324d; font-size: 14.5px; color: var(--ink-dim); line-height: 1.4; }
+.fact b { display: block; color: var(--ink); font-size: 15.5px; margin-bottom: 2px; }
 
-/* Scene 10: end */
-.s-end { justify-content: center; gap: 22px; }
-.e1 { font-family: var(--f-display); font-size: 96px; font-weight: 860; font-variation-settings: "wdth" 100, "wght" 860; line-height: .95; margin: 0; letter-spacing: -.02em; }
-.e1 em { font-style: normal; color: var(--agent); }
-.prompt-pill { font-family: var(--f-mono); font-size: 18px; line-height: 1.6; color: #e9e8f2; background: rgba(0, 0, 0, .35); border: 1px solid #3a3858; border-radius: 12px; padding: 16px 20px; max-width: 1000px; }
-.prompt-pill .pr { color: var(--agent); }
-.end-meta { display: flex; gap: 22px; font-family: var(--f-mono); font-size: 16px; color: var(--ink-dim); flex-wrap: wrap; }
-.end-meta b { color: var(--ink); font-weight: 600; }
-
-@media (prefers-reduced-motion: reduce) {
-  .grain, .cur { animation: none; }
-}
 </style>
-
 </head>
 <body>
-<div class="app">
-  <div class="tabbar">
-    <span class="tab">Composition: vrl-skills</span>
-    <span class="meta">1280 × 720 (1.00) · 0:01:12:00 · 30.00 fps</span>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#" aria-label="vibe-research-loop skills, back to top">
+      <svg viewBox="0 0 150 150" aria-hidden="true"><rect width="150" height="150" rx="30" fill="#141327"/><path d="M120 75 A45 45 0 1 1 98 36" fill="none" stroke="#b9a5ff" stroke-width="14" stroke-linecap="round"/><path d="M84 14 L122 28 L96 58 Z" fill="#b9a5ff"/></svg>
+      vibe-research-loop
+    </a>
+    <nav aria-label="Page">
+      <a href="#install">How it works</a>
+      <a href="#remote">Remote mode</a>
+      <a href="#install-now">Install</a>
+      <a class="gh" href="https://github.com/Beat-in-our-hearts/vibe-research-loop-skills"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.34.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.22 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.66 3.95.29.25.54.73.54 1.48v2.19c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>GitHub</a>
+    </nav>
   </div>
+</header>
 
-  <div class="viewer" id="viewer" role="img" aria-label="Animation: the vibe-research-loop skills from install to a confirmed finding">
-    <div class="stage" id="stage">
-      <div class="leak a"></div>
-      <div class="leak b"></div>
-
-      <!-- 0. Title -->
-      <section class="scene s-title" id="s0">
-        <p class="eyebrow">Agent skills for Claude Code and Codex</p>
-        <h1 class="mega">
-          <span class="mask"><span class="m1">vibe-research-</span></span>
-          <span class="m2row">
-            <span class="mask"><span class="m2">loop</span></span>
-            <svg class="loopmark" viewBox="0 0 150 150" aria-hidden="true">
-              <path class="draw" d="M120 75 A45 45 0 1 1 98 36"/>
-              <path class="head-tri" d="M86 18 L118 30 L96 56 Z"/>
-            </svg>
-          </span>
-        </h1>
-        <svg class="rule" width="760" height="6" viewBox="0 0 760 6" aria-hidden="true"><path class="draw" d="M3 3 H757"/></svg>
-        <p class="sub">Agents run the experiment loop. <b>You make the decisions.</b></p>
-      </section>
-
-      <!-- 1. Install -->
-      <section class="scene" id="s1">
-        <p class="eyebrow"><b>01</b>Install</p>
-        <h2 class="head">Install in one prompt</h2>
-        <div class="row">
-          <div class="term">
-            <div class="term-bar"><i></i><i></i><i></i><span>Claude Code · Codex</span></div>
-            <div class="term-body">
-              <p><span class="pr">›</span><span class="type">Install the vibe-research-loop skills</span><span class="cur c1"></span></p>
-              <p><span class="pr"></span><span class="type">by running curl -fsSL …/install.sh | bash</span><span class="cur c2"></span></p>
-              <p class="out o1">==&gt; Downloading the latest release</p>
-              <p class="out o2"><span class="ok">==&gt; Installed:</span> 7 skills</p>
-              <p class="out o3">copies in ~/.agents/skills, links in ~/.claude/skills</p>
-            </div>
-          </div>
-          <div>
-            <p class="chips-label">Skills</p>
-            <ul class="chips">
-              <li class="chip init">vrl-init-workspace</li>
-              <li class="chip">vrl-propose-idea</li>
-              <li class="chip">vrl-plan-experiment</li>
-              <li class="chip">vrl-run-experiment</li>
-              <li class="chip">vrl-analyze-results</li>
-              <li class="chip">vrl-write-finding</li>
-              <li class="chip">vrl-search-papers</li>
-            </ul>
-          </div>
-        </div>
-        <p class="cap">No clone and no sudo. Run it again to update.</p>
-      </section>
-
-      <!-- 2. Set up -->
-      <section class="scene" id="s2">
-        <p class="eyebrow"><b>02</b>Set up, once per machine</p>
-        <p class="cmd-line"><span class="pr">›</span><span class="type">/vrl-init-workspace</span></p>
-        <div class="cols3">
-          <div>
-            <p class="col-h">Workspace</p>
-            <div class="tree">
-              <p class="tr"><span class="f">AGENTS.md</span></p>
-              <p class="tr"><span class="d">docs/AGENTS/</span><span class="g">rules</span></p>
-              <p class="tr"><span class="d">main_repo/</span><span class="g">code</span></p>
-              <p class="tr"><span class="d">data/</span></p>
-              <p class="tr"><span class="d">runs/</span><span class="g">outputs</span></p>
-              <p class="tr"><span class="d">logs/</span></p>
-              <p class="tr"><span class="f">.env</span><span class="g">time zone, caches</span></p>
-            </div>
-          </div>
-          <div>
-            <p class="col-h">Notion</p>
-            <div class="dbs">
-              <div class="db-card"><b>Ideas</b><span>hypotheses to approve</span></div>
-              <div class="db-card"><b>Experiments</b><span>plans, runs, results</span></div>
-              <div class="db-card"><b>Findings</b><span>confirmed conclusions</span></div>
-              <div class="db-card"><b>Papers</b><span>Literature Library</span></div>
-            </div>
-          </div>
-          <div>
-            <p class="col-h">CLIs in ~/.local/bin</p>
-            <div class="clis">
-              <div class="cli"><svg viewBox="0 0 22 22" aria-hidden="true"><path class="draw" d="M4 11.5 L9 16 L18 6"/></svg>uv</div>
-              <div class="cli"><svg viewBox="0 0 22 22" aria-hidden="true"><path class="draw" d="M4 11.5 L9 16 L18 6"/></svg>ntn <em>Notion</em></div>
-              <div class="cli"><svg viewBox="0 0 22 22" aria-hidden="true"><path class="draw" d="M4 11.5 L9 16 L18 6"/></svg>gh <em>GitHub</em></div>
-              <div class="cli"><svg viewBox="0 0 22 22" aria-hidden="true"><path class="draw" d="M4 11.5 L9 16 L18 6"/></svg>hf <em>Hugging Face</em></div>
-            </div>
-          </div>
-        </div>
-        <p class="cap">Logins open in your browser, and <b>no token passes through the agent</b>.</p>
-      </section>
-
-      <!-- 3. Propose idea -->
-      <section class="scene" id="s3">
-        <p class="eyebrow"><b>03</b>vrl-propose-idea</p>
-        <div class="split">
-          <article class="page p-idea">
-            <div class="pg-top"><span class="db">Ideas</span><span class="pill"><span class="st-backlog">Backlog</span></span><span>Priority High</span></div>
-            <h3 class="pg-title">Mixup improves ResNet-18 accuracy on CIFAR-100</h3>
-            <div class="callout">
-              <p class="lt"><b>Goal</b>A stronger CIFAR-100 baseline</p>
-              <p class="lt"><b>Observations</b>Train accuracy hits 99.9%, test stays near 76%</p>
-              <p class="lt"><b>Hypothesis</b>Mixup regularizes away the overfitting</p>
-              <p class="lt"><b>Test</b>Mixup against standard augmentation</p>
-              <p class="lt"><b>Decision</b>Pass at +1 point over baseline, 3 seeds</p>
-            </div>
-            <p class="tbl-cap">Stages and budget</p>
-            <table class="mini">
-              <thead><tr><th>Stage</th><th>What it tests</th><th>Single GPU</th><th>This machine</th></tr></thead>
-              <tbody>
-                <tr class="sr"><td>1</td><td>2 groups, 1 seed, 50 epochs</td><td>~1 h</td><td>4 GPUs, ~0.5 h</td></tr>
-                <tr class="sr"><td>2</td><td>2 groups, 3 seeds, 200 epochs</td><td>~12 h</td><td>4 GPUs, ~4 h</td></tr>
-              </tbody>
-            </table>
-          </article>
-          <div class="gate g1">
-            <p class="who">You decide</p>
-            <p class="what">Approve the idea and set its Budget limits</p>
-            <div class="check">
-              <span class="box"><svg viewBox="0 0 20 20" aria-hidden="true"><path class="draw" d="M4 10.5 L8.5 15 L16 5.5"/></svg></span>Human Approved
-              <span class="ripple"></span>
-              <svg class="cursor" viewBox="0 0 26 30" aria-hidden="true"><path d="M2 2 L2 24 L8 18.5 L12 28 L16 26.3 L12 17 L20 17 Z"/></svg>
-            </div>
-          </div>
-        </div>
-        <p class="cap">One falsifiable hypothesis, judged <b>before anything is built</b>.</p>
-      </section>
-
-      <!-- 4. Plan experiment -->
-      <section class="scene" id="s4">
-        <p class="eyebrow"><b>04</b>vrl-plan-experiment</p>
-        <div class="split">
-          <article class="page p-exp">
-            <div class="pg-top"><span class="db">Experiments</span><span class="pill"><span class="st-planned">Planned</span></span>
-              <span class="idea-ref">Idea <span class="pill pill-idea"><span class="st-backlog a">Backlog</span><span class="st-testing b">Testing</span></span></span></div>
-            <h3 class="pg-title">Mixup against standard aug, stage 1</h3>
-            <table class="mini">
-              <thead><tr><th>Run</th><th>Setting</th><th>Seeds</th><th>Machine</th></tr></thead>
-              <tbody>
-                <tr class="rr"><td>baseline</td><td>crop and flip</td><td>1</td><td>GPU 0</td></tr>
-                <tr class="rr"><td>mixup</td><td>+ mixup, α = 0.2</td><td>1</td><td>GPU 1</td></tr>
-              </tbody>
-            </table>
-            <div class="budget">
-              <div class="budget-h"><span>Budget left: <b>20</b> single-GPU hours</span><span>Stage 1 needs <b>~1 h</b></span></div>
-              <div class="track"><i class="fill"></i></div>
-              <div class="fit-row"><span class="stamp st1">Plan the whole stage</span><span class="smoke">Smoke run passed</span></div>
-            </div>
-          </article>
-          <div class="gate g2">
-            <p class="who">You decide</p>
-            <p class="what">Approve the plan, its runs, and every deviation</p>
-            <div class="check">
-              <span class="box"><svg viewBox="0 0 20 20" aria-hidden="true"><path class="draw" d="M4 10.5 L8.5 15 L16 5.5"/></svg></span>Human Approved
-              <span class="ripple"></span>
-              <svg class="cursor" viewBox="0 0 26 30" aria-hidden="true"><path d="M2 2 L2 24 L8 18.5 L12 28 L16 26.3 L12 17 L20 17 Z"/></svg>
-            </div>
-          </div>
-        </div>
-        <p class="cap">Each experiment runs one stage, or <b>the part of it that fits the budget left</b>.</p>
-      </section>
-
-      <!-- 5. Run experiment -->
-      <section class="scene" id="s5">
-        <p class="eyebrow"><b>05</b>vrl-run-experiment</p>
-        <div class="runwrap">
-          <div class="panes">
-            <span class="stage-tag"><span class="a">Stage 1 · 1 seed · 50 epochs</span><span class="b">Stage 2 · 3 seeds · 200 epochs</span></span>
-            <div class="pane">
-              <div class="pane-h"><b>tmux vrl:baseline</b><span>GPU 0</span></div>
-              <div class="bar base"><i></i></div>
-            </div>
-            <div class="pane">
-              <div class="pane-h"><b>tmux vrl:mixup</b><span>GPU 1</span></div>
-              <div class="bar"><i></i></div>
-            </div>
-            <p class="goon">Go on when mixup is not worse: met</p>
-          </div>
-          <div class="chart">
-            <svg width="560" height="300" viewBox="0 0 560 300" aria-hidden="true">
-              <line class="grid" x1="50" y1="70" x2="550" y2="70"/>
-              <line class="grid" x1="50" y1="140" x2="550" y2="140"/>
-              <line class="grid" x1="50" y1="210" x2="550" y2="210"/>
-              <line class="axis" x1="50" y1="20" x2="50" y2="270"/>
-              <line class="axis" x1="50" y1="270" x2="550" y2="270"/>
-              <text class="lbl" x="10" y="74">0.6</text>
-              <text class="lbl" x="10" y="144">0.4</text>
-              <text class="lbl" x="10" y="214">0.2</text>
-              <text class="lbl" x="480" y="292">epochs</text>
-              <path class="draw c-base" d="M50 60 C90 40 110 110 140 120 S190 90 220 150 S300 170 340 190 S440 200 550 214"/>
-              <path class="draw c-alt" d="M50 70 C100 90 140 130 180 150 S260 180 320 200 S430 222 550 236"/>
-            </svg>
-            <div class="legend"><span><i style="background:#8c89b8"></i>baseline test error</span><span><i style="background:var(--agent)"></i>mixup test error</span></div>
-            <div class="status-row"><span class="label">Status</span>
-              <span class="pill pill-run"><span class="st-planned a">Planned</span><span class="st-running b">Running</span><span class="st-finish c">Finish</span></span>
-              <span class="stamp outcome">Outcome: Done</span>
-            </div>
-          </div>
-        </div>
-        <p class="cap">Long jobs run in tmux. Reports come <b>when the runs have news</b>.</p>
-      </section>
-
-      <!-- 6. Analyze results -->
-      <section class="scene" id="s6">
-        <p class="eyebrow"><b>06</b>vrl-analyze-results</p>
-        <div class="anwrap">
-          <div class="barchart">
-            <span class="gl" style="bottom:110px"></span><span class="gl" style="bottom:220px"></span>
-            <span class="yl" style="bottom:0">74%</span><span class="yl" style="bottom:110px">76%</span><span class="yl" style="bottom:220px">78%</span><span class="yl" style="bottom:330px">80%</span>
-            <div class="bc base"></div>
-            <div class="bc alt"></div>
-            <span class="eb e-base" style="left:129px; bottom:116px; height:33px"></span>
-            <span class="eb e-alt" style="left:319px; bottom:215px; height:22px"></span>
-            <span class="bv v-base" style="left:70px; bottom:157px">76.4</span>
-            <span class="bv v-alt" style="left:260px; bottom:245px; color:var(--agent)">78.1</span>
-            <span class="xl" style="left:70px">baseline</span>
-            <span class="xl" style="left:260px">mixup</span>
-          </div>
-          <div>
-            <div class="t1">
-              <p class="tbl-cap">Table 1. Top-1 accuracy on CIFAR-100, mean ± std over 3 seeds</p>
-              <table class="mini">
-                <thead><tr><th>Run</th><th>Top-1 accuracy (%) ↑</th><th>vs baseline</th></tr></thead>
-                <tbody>
-                  <tr class="tr1"><td>baseline</td><td>76.4 ± 0.3</td><td>—</td></tr>
-                  <tr class="tr1"><td>mixup</td><td class="best">78.1 ± 0.2</td><td>+1.7, p = 0.004</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="decide">
-              <div class="diamond"><div></div><span>Stop iterating?</span></div>
-              <svg width="70" height="20" viewBox="0 0 70 20" aria-hidden="true"><path class="draw arrow" d="M2 10 H60 M50 3 L62 10 L50 17"/></svg>
-              <span class="yes">Yes: the success criteria are met</span>
-            </div>
-          </div>
-        </div>
-        <p class="cap">Numbers come from the metrics files, <b>never from memory</b>.</p>
-      </section>
-
-      <!-- 7. Write finding -->
-      <section class="scene" id="s7">
-        <p class="eyebrow"><b>07</b>vrl-write-finding</p>
-        <div class="split">
-          <article class="page p-find">
-            <div class="pg-top"><span class="db">Findings</span><span class="pill pill-find"><span class="st-review a">Under Review</span><span class="st-confirmed b">Confirmed</span></span></div>
-            <h3 class="pg-title">Mixup lifts ResNet-18 accuracy on CIFAR-100</h3>
-            <p class="one">On CIFAR-100, mixup with α = 0.2 raises ResNet-18 top-1 accuracy from 76.4% to 78.1%, over 3 seeds (p = 0.004).</p>
-            <span class="stamp closed">Idea closed: Supported</span>
-          </article>
-          <div class="gate g3">
-            <p class="who">You decide</p>
-            <p class="what">Confirm the finding, or overturn it</p>
-            <div class="check">
-              <span class="box"><svg viewBox="0 0 20 20" aria-hidden="true"><path class="draw" d="M4 10.5 L8.5 15 L16 5.5"/></svg></span>Confirmed
-              <span class="ripple"></span>
-              <svg class="cursor" viewBox="0 0 26 30" aria-hidden="true"><path d="M2 2 L2 24 L8 18.5 L12 28 L16 26.3 L12 17 L20 17 Z"/></svg>
-            </div>
-          </div>
-        </div>
-        <p class="cap">A finding counts <b>only once you confirm it</b>. Negative results get the same care.</p>
-      </section>
-
-      <!-- 8. Notion board -->
-      <section class="scene" id="s8">
-        <p class="eyebrow"><b>08</b>Notion board, many experiments at once</p>
-        <div class="nwin">
-          <div class="nw-top"><span>Research Core</span><span class="sep">/</span><span>Experiments</span></div>
-          <div class="nw-head">
-            <h3 class="nw-title">Experiments</h3>
-            <div class="nw-tabs"><span class="on">Board</span><span>Table</span><span>By idea</span><span class="nw-new">New</span></div>
-          </div>
-          <div class="kb">
-            <div class="kcol plan" style="left:0"><span class="kh st-planned">Planned</span><span class="cnt"><span>2</span><span>1</span><span>2</span></span></div>
-            <div class="kcol run" style="left:354px"><span class="kh st-running">Running</span><span class="cnt"><span>2</span><span>1</span><span>2</span><span>1</span></span></div>
-            <div class="kcol fin" style="left:708px"><span class="kh st-finish">Finish</span><span class="cnt"><span>1</span><span>2</span><span>3</span></span></div>
-            <div class="kcard" id="kc-mix" data-col="1" data-slot="0">
-              <p class="kt">Mixup against standard aug, stage 2</p>
-              <p class="ki"><svg viewBox="0 0 11 13" aria-hidden="true"><path d="M1 .8h6l3 3v8.4H1z"/></svg>Mixup on CIFAR-100</p>
-              <p class="kp"><span class="pbar"><span class="pb-bg">░░░░░░░░░░</span><span class="pb-fg" style="width:3ch">██████████</span></span><span class="pnum"><span>30%</span><span>65%</span><span>100%</span></span></p>
-              <p class="km"><span>Est. Hours 4</span><span class="hap on"><span class="cb"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.5 L5 9 L9.5 3.5"/></svg></span>Human Approved</span></p>
-              <span class="oc">Done</span>
-            </div>
-            <div class="kcard" id="kc-clip" data-col="1" data-slot="1">
-              <p class="kt">Clipping at 1.0 against none, stage 1</p>
-              <p class="ki"><svg viewBox="0 0 11 13" aria-hidden="true"><path d="M1 .8h6l3 3v8.4H1z"/></svg>Gradient clipping for GPT-2 small</p>
-              <p class="kp"><span class="pbar"><span class="pb-bg">░░░░░░░░░░</span><span class="pb-fg" style="width:6ch">██████████</span></span><span class="pnum"><span>60%</span><span>100%</span></span></p>
-              <p class="km"><span>Est. Hours 2</span><span class="hap on"><span class="cb"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.5 L5 9 L9.5 3.5"/></svg></span>Human Approved</span></p>
-              <span class="oc">Done</span>
-            </div>
-            <div class="kcard" id="kc-wd" data-col="0" data-slot="0">
-              <p class="kt">Weight decay sweep, stage 1</p>
-              <p class="ki"><svg viewBox="0 0 11 13" aria-hidden="true"><path d="M1 .8h6l3 3v8.4H1z"/></svg>Weight decay for ViT-Tiny</p>
-              <p class="kp"><span class="pbar"><span class="pb-bg">░░░░░░░░░░</span><span class="pb-fg" style="width:0ch">██████████</span></span><span class="pnum"><span>0%</span><span>20%</span><span>40%</span></span></p>
-              <p class="km"><span>Est. Hours 3</span><span class="hap"><span class="cb"><svg viewBox="0 0 12 12" aria-hidden="true"><path class="draw" d="M2.5 6.5 L5 9 L9.5 3.5"/></svg></span>Human Approved</span></p>
-              <span class="oc">Done</span>
-            </div>
-            <div class="kcard" id="kc-ls" data-col="0" data-slot="1">
-              <p class="kt">Label smoothing at 0.1, stage 1</p>
-              <p class="ki"><svg viewBox="0 0 11 13" aria-hidden="true"><path d="M1 .8h6l3 3v8.4H1z"/></svg>Label smoothing on ImageNet-100</p>
-              <p class="kp"><span class="pbar"><span class="pb-bg">░░░░░░░░░░</span><span class="pb-fg" style="width:0ch">██████████</span></span><span class="pnum"><span>0%</span></span></p>
-              <p class="km"><span>Est. Hours 6</span><span class="hap"><span class="cb"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.5 L5 9 L9.5 3.5"/></svg></span>Human Approved</span></p>
-              <span class="oc">Done</span>
-            </div>
-            <div class="kcard" id="kc-sam" data-col="2" data-slot="0">
-              <p class="kt">SAM against SGD, stage 2</p>
-              <p class="ki"><svg viewBox="0 0 11 13" aria-hidden="true"><path d="M1 .8h6l3 3v8.4H1z"/></svg>SAM on CIFAR-10</p>
-              <p class="kp"><span class="pbar"><span class="pb-bg">░░░░░░░░░░</span><span class="pb-fg" style="width:10ch">██████████</span></span><span class="pnum"><span>100%</span></span></p>
-              <p class="km"><span>Est. Hours 9</span><span class="hap on"><span class="cb"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.5 L5 9 L9.5 3.5"/></svg></span>Human Approved</span></p>
-              <span class="oc on">Done</span>
-            </div>
-            <div class="kcard" id="kc-cut" data-col="0" data-slot="1">
-              <p class="kt">CutMix against mixup, stage 1</p>
-              <p class="ki"><svg viewBox="0 0 11 13" aria-hidden="true"><path d="M1 .8h6l3 3v8.4H1z"/></svg>CutMix on CIFAR-100</p>
-              <p class="kp"><span class="pbar"><span class="pb-bg">░░░░░░░░░░</span><span class="pb-fg" style="width:0ch">██████████</span></span><span class="pnum"><span>0%</span></span></p>
-              <p class="km"><span>Est. Hours 1</span><span class="hap"><span class="cb"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.5 L5 9 L9.5 3.5"/></svg></span>Human Approved</span></p>
-              <span class="oc">Done</span>
-            </div>
-          </div>
-        </div>
-        <p class="cap">Status, progress, and approval of every experiment, <b>at a glance</b>.</p>
-      </section>
-
-      <!-- 9. Review by color -->
-      <section class="scene" id="s9">
-        <p class="eyebrow"><b>09</b>Review by color</p>
-        <h2 class="head">Mark it. The agent answers every mark.</h2>
-        <div class="revwrap">
-          <article class="page p-rev">
-            <p>Mixup beat the baseline with <span class="mk r">p = 0.04</span>, so <span class="mk o">manifold mixup</span> comes next, and to save time we <span class="mk p">drop the third seed</span>.</p>
-            <div class="legend3"><span class="lg-r">Red: wrong</span><span class="lg-o">Orange: unclear</span><span class="lg-p">Purple: unacceptable</span></div>
-          </article>
-          <div class="replies">
-            <div class="reply rp1"><span class="tag r">Red</span><p>Fixed: p = 0.004, and said why it changed</p></div>
-            <div class="reply rp2"><span class="tag o">Orange</span><p>Explained in plainer words, then rewrote it</p></div>
-            <div class="reply rp3"><span class="tag p">Purple</span><p>Proposed an alternative. The mark stays until you decide.</p></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 10. Remote mode -->
-      <section class="scene" id="s10">
-        <p class="eyebrow"><b>10</b>Remote mode</p>
-        <h2 class="head">No GPU here? Compute over SSH.</h2>
-        <div class="remwrap">
-          <div class="host local">
-            <h3>Local machine</h3>
-            <p>AGENTS.md and docs/AGENTS/<br>ntn, file edits<br>hpc_workspace/ (SSHFS mount)</p>
-          </div>
-          <div class="tube">
-            <div class="tube-label">One SSH master · heartbeat every 15 s</div>
-            <div class="pipe"></div>
-            <div class="core"></div>
-            <div class="hbwrap"><span class="hb"></span><span class="hb"></span><span class="hb"></span></div>
-            <span class="packet go">timeout -k 5 60 ssh … 'nvidia-smi'</span>
-            <span class="packet back">__EXIT 0</span>
-          </div>
-          <div class="host hpc">
-            <h3>HPC host</h3>
-            <div class="gpus"><i></i><i></i><i></i><i></i></div>
-            <div><span class="win">vrl:baseline</span><span class="win">vrl:mixup</span></div>
-            <p>code, runs, logs, Python</p>
-          </div>
-        </div>
-        <p class="cap">Every call has a time limit, and long jobs run in tmux on the host.</p>
-      </section>
-
-      <!-- 11. End card -->
-      <section class="scene s-end" id="s11">
-        <p class="eyebrow">Install in one prompt</p>
-        <h2 class="e1">vibe-research-<em>loop</em></h2>
-        <p class="prompt-pill"><span class="pr">›</span> Install the vibe-research-loop skills by running curl -fsSL …/install.sh | bash, then tell me which skills it installed, anything it left alone, and the next step it prints.</p>
-        <div class="end-meta"><span><b>github.com/Beat-in-our-hearts</b>/vibe-research-loop-skills</span><span>MIT</span><span>Claude Code · Codex</span></div>
-      </section>
-
-      <div class="safe"></div>
-      <div class="grain"></div>
+<section class="hero">
+  <div class="aurora" aria-hidden="true"><i class="a1"></i><i class="a2"></i><i class="a3"></i></div>
+  <div class="gridbg" aria-hidden="true"></div>
+  <div class="wrap">
+    <span class="badge"><b>MIT</b>Agent skills for Claude Code and Codex</span>
+    <h1>vibe-research-<em>loop</em></h1>
+    <p class="tag">Agents run the experiment loop: ideas, plans, runs, results, findings. <b>You make every decision that matters.</b></p>
+    <div class="cta">
+      <a class="btn primary" href="#install-now">Install in one prompt</a>
+      <a class="btn" href="#install">See how it works</a>
     </div>
+    <div class="flow" aria-label="The loop at a glance">
+      <button class="fstep" data-go="propose">Idea</button>
+      <button class="fgate" data-go="propose"><i></i>You approve</button>
+      <button class="fstep" data-go="plan">Plan</button>
+      <button class="fgate" data-go="plan"><i></i>You approve</button>
+      <button class="fstep" data-go="run">Run</button>
+      <span class="fline"></span>
+      <button class="fstep" data-go="analyze">Analyze</button>
+      <span class="fline"></span>
+      <button class="fstep" data-go="finding">Finding</button>
+      <button class="fgate" data-go="finding"><i></i>You confirm</button>
+    </div>
+    <div class="hint-legend">
+      <span><i style="background:var(--agent)"></i>The agent does it</span>
+      <span><i style="background:var(--human)"></i>You decide, with one click</span>
+    </div>
+    <span class="scroll-cue"><svg viewBox="0 0 16 16"><path d="M3.5 6 L8 10.5 L12.5 6"/></svg>Scroll: each skill plays when it comes into view</span>
   </div>
+</section>
 
-  <div class="viewer-foot">
-    <span>Magnification <b id="mag">100%</b></span>
-    <span>Resolution <b>Full</b></span>
-    <span>View <b>Active Camera</b></span>
-    <span class="tc-small" id="tcSmall">0:00:00:00</span>
-  </div>
-
-  <div class="transport">
-    <div class="btns">
-      <button class="tbtn" id="bStart" aria-label="Go to the start"><svg viewBox="0 0 14 14"><path d="M2 1h2v12H2zM13 1v12L5 7z"/></svg></button>
-      <button class="tbtn" id="bPrev" aria-label="Previous scene"><svg viewBox="0 0 14 14"><path d="M13 1v12L6.5 7zM7 1v12L.5 7z"/></svg></button>
-      <button class="tbtn" id="bPlay" aria-label="Play"><svg viewBox="0 0 14 14" id="iPlay"><path d="M3 1l10 6-10 6z"/></svg></button>
-      <button class="tbtn" id="bNext" aria-label="Next scene"><svg viewBox="0 0 14 14"><path d="M1 1v12l6.5-6zM7 1v12l6.5-6z"/></svg></button>
+<main>
+  <section class="feature" id="install" data-step="install" style="--c:#A9CBC7">
+    <div class="wrap fcol">
+      <header class="fhead">
+        <div class="meta"><span class="idx">01</span><span class="skill-chip">install.sh</span></div>
+        <h2>Install in one prompt</h2>
+        <p class="sub">One sentence in Claude Code or Codex installs <b>all seven skills</b>.</p>
+      </header>
+      <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="A terminal installs the seven skills from one prompt."></div></div></div>
+      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
     </div>
-    <span class="tc" id="tc">0:00:00:00</span>
-    <span class="frames" id="frames">00000 (30.00 fps)</span>
-    <span class="keys">Space play or pause · ← → one frame · Shift for ten</span>
-    <span class="now"><i id="nowSw"></i><span id="nowName">Title</span></span>
-  </div>
-
-  <div class="timeline">
-    <div class="tl-left">
-      <div class="tl-head">Layer name</div>
-      <div id="tlNames"></div>
-    </div>
-    <div class="tl-right" id="tlRight">
-      <div class="ruler" id="ruler"><span class="workarea"></span></div>
-      <div id="tlLanes"></div>
-      <div class="cti" id="cti"></div>
-    </div>
-  </div>
-
-  <section class="info">
-    <h2>The vibe-research-loop skills, from install to a confirmed finding</h2>
-    <p>A 72-second reel of the seven skills at work: install and setup, the loop from an idea to a confirmed finding, a Notion board with several experiments running at once, review by color, and remote mode. Play it like a composition: press Space, step frames with the arrow keys, drag along the timeline, or click a layer to jump to it.</p>
-    <div class="copy">
-      <code id="promptText">Install the vibe-research-loop skills by running `curl -fsSL https://raw.githubusercontent.com/Beat-in-our-hearts/vibe-research-loop-skills/main/install.sh | bash`, then tell me which skills it installed, anything it left alone, and the next step it prints.</code>
-      <button id="copyBtn">Copy prompt</button>
-    </div>
-    <a href="https://github.com/Beat-in-our-hearts/vibe-research-loop-skills">github.com/Beat-in-our-hearts/vibe-research-loop-skills</a>
   </section>
-</div>
+
+  <section class="feature" id="setup" data-step="setup" style="--c:#677DE0">
+    <div class="wrap fcol">
+      <header class="fhead">
+        <div class="meta"><span class="idx">02</span><span class="skill-chip">vrl-init-workspace</span></div>
+        <h2>Set up once per machine</h2>
+        <p class="sub">Workspace, Notion project, and tools, <b>ready in one run</b>.</p>
+      </header>
+      <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="The setup builds the workspace folders, four Notion databases, and four command-line tools."></div></div></div>
+      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+    </div>
+  </section>
+
+  <section class="feature" id="propose" data-step="propose" style="--c:#4AA44C">
+    <div class="wrap fcol">
+      <header class="fhead">
+        <div class="meta"><span class="idx">03</span><span class="skill-chip">vrl-propose-idea</span><span class="decide-chip"><i></i>You decide</span></div>
+        <h2>Turn a hunch into a testable idea</h2>
+        <p class="sub">A hypothesis, its evidence, and a staged test. <b>You approve it first.</b></p>
+      </header>
+      <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="An idea page in Notion, waiting for your approval."></div></div></div>
+      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+    </div>
+  </section>
+
+  <section class="feature" id="plan" data-step="plan" style="--c:#B3C7B3">
+    <div class="wrap fcol">
+      <header class="fhead">
+        <div class="meta"><span class="idx">04</span><span class="skill-chip">vrl-plan-experiment</span><span class="decide-chip"><i></i>You decide</span></div>
+        <h2>Plan before anything runs</h2>
+        <p class="sub">Every run, step, and cost, sized to the budget. <b>You approve the plan.</b></p>
+      </header>
+      <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="An experiment plan that fits the budget, waiting for your approval."></div></div></div>
+      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+    </div>
+  </section>
+
+  <section class="feature" id="run" data-step="run" style="--c:#3DA2A5">
+    <div class="wrap fcol">
+      <header class="fhead">
+        <div class="meta"><span class="idx">05</span><span class="skill-chip">vrl-run-experiment</span></div>
+        <h2>Run, and hear back when it matters</h2>
+        <p class="sub">Jobs run in tmux and <b>report when there is news</b>.</p>
+      </header>
+      <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="Two runs train in tmux while reports arrive."></div></div></div>
+      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+    </div>
+  </section>
+
+  <section class="feature" id="analyze" data-step="analyze" style="--c:#E4D84C">
+    <div class="wrap fcol">
+      <header class="fhead">
+        <div class="meta"><span class="idx">06</span><span class="skill-chip">vrl-analyze-results</span></div>
+        <h2>Turn metrics into evidence</h2>
+        <p class="sub">Mean ± std, significance, and figures, <b>straight from the metrics files</b>.</p>
+      </header>
+      <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="A bar chart and Table 1 compare mixup with the baseline."></div></div></div>
+      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+    </div>
+  </section>
+
+  <section class="feature" id="finding" data-step="finding" style="--c:#E7C19E">
+    <div class="wrap fcol">
+      <header class="fhead">
+        <div class="meta"><span class="idx">07</span><span class="skill-chip">vrl-write-finding</span><span class="decide-chip"><i></i>You decide</span></div>
+        <h2>Record what you verified</h2>
+        <p class="sub">A paper-style finding that <b>counts once you confirm it</b>.</p>
+      </header>
+      <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="A finding page, waiting for your confirmation."></div></div></div>
+      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+    </div>
+  </section>
+
+  <section class="feature" id="board" data-step="board" style="--c:#F46DD6">
+    <div class="wrap fcol">
+      <header class="fhead">
+        <div class="meta"><span class="idx">08</span><span class="skill-chip">Notion</span></div>
+        <h2>Many experiments at once</h2>
+        <p class="sub">One board, <b>kept current by the agents</b>.</p>
+      </header>
+      <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="A Notion board where experiment cards move between columns."></div></div></div>
+      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+    </div>
+  </section>
+
+  <section class="feature" id="review" data-step="review" style="--c:#E5BCC9">
+    <div class="wrap fcol">
+      <header class="fhead">
+        <div class="meta"><span class="idx">09</span><span class="skill-chip">Review by color</span></div>
+        <h2>Mark it, and the agent answers</h2>
+        <p class="sub"><b style="color:var(--red)">Red</b> is wrong, <b style="color:var(--orange)">orange</b> is unclear, <b style="color:var(--human)">purple</b> is not acceptable.</p>
+      </header>
+      <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="Text marked in red, orange, and purple, with the agent's answers."></div></div></div>
+      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+    </div>
+  </section>
+
+  <section class="feature" id="remote" data-step="remote" style="--c:#8FA4FF">
+    <div class="wrap fcol">
+      <header class="fhead">
+        <div class="meta"><span class="idx">10</span><span class="skill-chip">Remote mode</span></div>
+        <h2>No GPU here? Compute over SSH.</h2>
+        <p class="sub">Your laptop drives; <b>a remote host does the work</b>.</p>
+      </header>
+      <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="A laptop and a GPU host joined by one SSH connection."></div></div></div>
+      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="props" aria-label="Why it works">
+      <div class="prop"><div class="ic" style="background:rgba(98,196,107,.16);color:#9fe3a4"><svg viewBox="0 0 20 20"><path d="M4 10.5 L8.5 15 L16 5.5"/></svg></div><h4>The agent does the work</h4><p>Plans, code, runs, figures, write-ups.</p></div>
+      <div class="prop"><div class="ic" style="background:rgba(185,165,255,.16);color:#d3c8ff"><svg viewBox="0 0 20 20"><path d="M10 3 L17 10 L10 17 L3 10 Z"/></svg></div><h4>You make the calls</h4><p>Three clicks: idea, plan, finding.</p></div>
+      <div class="prop"><div class="ic" style="background:rgba(111,142,246,.16);color:#b7c6ff"><svg viewBox="0 0 20 20"><path d="M4 4h12v12H4zM4 8h12M8 8v8"/></svg></div><h4>Everything is recorded</h4><p>Notion for results, git for code.</p></div>
+    </section>
+
+    <section class="install" id="install-now">
+      <div class="install-card">
+        <p class="eyebrow">Get started</p>
+        <h2>Install in one prompt</h2>
+        <p>Paste this into Claude Code or Codex:</p>
+        <div class="copy">
+          <code id="promptText">Install the vibe-research-loop skills by running `curl -fsSL https://raw.githubusercontent.com/Beat-in-our-hearts/vibe-research-loop-skills/main/install.sh | bash`, then tell me which skills it installed, anything it left alone, and the next step it prints.</code>
+          <button id="copyBtn" type="button">Copy prompt</button>
+        </div>
+        <ol class="steps3">
+          <li>Paste the prompt above.</li>
+          <li>Run <code>/vrl-init-workspace</code> from an empty folder.</li>
+          <li>Ask for your first idea.</li>
+        </ol>
+        <div class="links">
+          <a href="https://github.com/Beat-in-our-hearts/vibe-research-loop-skills">GitHub repository</a>
+          <a href="https://github.com/Beat-in-our-hearts/vibe-research-loop-skills/releases">Releases</a>
+          <a href="https://github.com/Beat-in-our-hearts/vibe-research-loop-skills/blob/main/LICENSE">MIT license</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap"><span>vibe-research-loop skills · MIT</span><span>Made for Claude Code and Codex</span></div>
+</footer>
+
+<!-- ================= Scenes, one per section ================= -->
+
+<template id="v-install">
+  <div class="v">
+    <div class="term">
+      <div class="term-bar"><i></i><i></i><i></i><span>Claude Code · Codex</span></div>
+      <div class="term-body">
+        <p><span class="pr">›</span><span class="type t1">Install the vibe-research-loop skills</span><span class="cur c1"></span></p>
+        <p><span class="pr"></span><span class="type t2">by running curl -fsSL …/install.sh | bash</span><span class="cur c2" style="display:none"></span></p>
+        <p class="out o1">==&gt; Downloading the latest release</p>
+        <p class="out o2"><span class="ok">==&gt; Installed:</span> 7 skills</p>
+        <p class="out o3">copies in ~/.agents/skills, links in ~/.claude/skills</p>
+      </div>
+    </div>
+    <p class="chips-label">The seven skills</p>
+    <ul class="chips">
+      <li class="chip init">vrl-init-workspace</li>
+      <li class="chip">vrl-propose-idea</li>
+      <li class="chip">vrl-plan-experiment</li>
+      <li class="chip">vrl-run-experiment</li>
+      <li class="chip">vrl-analyze-results</li>
+      <li class="chip">vrl-write-finding</li>
+      <li class="chip">vrl-search-papers</li>
+    </ul>
+  </div>
+</template>
+
+<template id="v-setup">
+  <div class="v">
+    <p class="cmd-line"><span class="pr">›</span><span class="type t1">/vrl-init-workspace</span></p>
+    <div class="setup-grid">
+      <div class="ftree">
+        <div class="ftree-bar"><span>Workspace</span><span>git</span></div>
+        <div class="ftree-body">
+          <p class="tl"><span class="tg"></span><span class="td">workspace/</span><span class="tn">where agents start</span></p>
+          <p class="tl"><span class="tg">├── </span><span class="tf">AGENTS.md</span><span class="tn">rule index</span></p>
+          <p class="tl"><span class="tg">├── </span><span class="tf">.env</span><span class="tn">time zone, caches</span></p>
+          <p class="tl"><span class="tg">├── </span><span class="td">main_repo/</span><span class="tn">your code</span></p>
+          <p class="tl"><span class="tg">├── </span><span class="td">worktrees/</span><span class="tn">one per branch</span></p>
+          <p class="tl"><span class="tg">├── </span><span class="td">data/</span><span class="tn">datasets, read-only</span></p>
+          <p class="tl"><span class="tg">├── </span><span class="td">docs/</span></p>
+          <p class="tl"><span class="tg">│   ├── </span><span class="td">AGENTS/</span><span class="tn">rules, one per file</span></p>
+          <p class="tl"><span class="tg">│   └── </span><span class="td">plans/</span><span class="tn">one per experiment</span></p>
+          <p class="tl"><span class="tg">├── </span><span class="td">logs/</span><span class="tn">one log per run</span></p>
+          <p class="tl"><span class="tg">├── </span><span class="td">runs/</span><span class="tn">outputs</span></p>
+          <p class="tl"><span class="tg">│   └── </span><span class="td">&lt;date&gt;-&lt;name&gt;/</span><span class="tn">checkpoints, metrics</span></p>
+          <p class="tl"><span class="tg">│       └── </span><span class="td">figures/</span><span class="tn">PDF, PNG, script</span></p>
+          <p class="tl"><span class="tg">└── </span><span class="td">tmp/</span><span class="tn">scratch</span></p>
+        </div>
+      </div>
+      <div class="setup-side">
+        <p class="col-h">Notion</p>
+        <div class="dbs">
+          <div class="db-card"><b>Ideas</b><span>to approve</span></div>
+          <div class="db-card"><b>Experiments</b><span>plans, runs</span></div>
+          <div class="db-card"><b>Findings</b><span>confirmed</span></div>
+          <div class="db-card"><b>Papers</b><span>library</span></div>
+        </div>
+        <p class="col-h tools-h">Tools in ~/.local/bin</p>
+        <div class="clis">
+          <div class="cli"><svg viewBox="0 0 22 22"><path d="M4 11.5 L9 16 L18 6"/></svg>uv</div>
+          <div class="cli"><svg viewBox="0 0 22 22"><path d="M4 11.5 L9 16 L18 6"/></svg>ntn <em>Notion</em></div>
+          <div class="cli"><svg viewBox="0 0 22 22"><path d="M4 11.5 L9 16 L18 6"/></svg>gh <em>GitHub</em></div>
+          <div class="cli"><svg viewBox="0 0 22 22"><path d="M4 11.5 L9 16 L18 6"/></svg>hf <em>Hugging Face</em></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="v-propose">
+  <div class="v">
+    <div class="split">
+      <article class="page">
+        <div class="pg-top"><span class="db">Ideas</span><span class="pill"><span class="st-backlog">Backlog</span></span><span>Priority High</span></div>
+        <h3 class="pg-title">Mixup improves ResNet-18 accuracy on CIFAR-100</h3>
+        <div class="callout">
+          <p class="lt"><b>Goal</b>A stronger CIFAR-100 baseline</p>
+          <p class="lt"><b>Observations</b>Train accuracy 99.9%, test near 76%</p>
+          <p class="lt"><b>Hypothesis</b>Mixup reduces the overfitting</p>
+          <p class="lt"><b>Test</b>Mixup against standard augmentation</p>
+          <p class="lt"><b>Decision</b>Pass at +1 point, mean of 3 seeds</p>
+        </div>
+        <p class="tbl-cap">Stages and budget</p>
+        <table class="mini">
+          <thead><tr><th>Stage</th><th>Tests</th><th>1 GPU</th><th>4 GPUs</th></tr></thead>
+          <tbody>
+            <tr class="sr"><td>1</td><td>1 seed, 50 epochs</td><td>~1 h</td><td>~0.5 h</td></tr>
+            <tr class="sr"><td>2</td><td>3 seeds, 200 epochs</td><td>~12 h</td><td>~4 h</td></tr>
+          </tbody>
+        </table>
+      </article>
+      <div class="gate">
+        <p class="who">You decide</p>
+        <p class="what">Approve the idea and set its budget</p>
+        <button class="approve" type="button" aria-disabled="true"><span class="box"><svg viewBox="0 0 20 20"><path d="M4 10.5 L8.5 15 L16 5.5"/></svg></span>Human Approved</button>
+        <p class="click-me" style="visibility:hidden">Click to approve</p>
+        <p class="result" style="visibility:hidden">Approved. The agent may now plan an experiment.</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="v-plan">
+  <div class="v">
+    <div class="split">
+      <article class="page">
+        <div class="pg-top"><span class="db">Experiments</span><span class="pill"><span class="st-planned">Planned</span></span>
+          <span>Idea</span><span class="pill pill-idea"><span class="st-backlog">Backlog</span><span class="st-testing">Testing</span></span></div>
+        <h3 class="pg-title">Mixup against standard augmentation, stage 1</h3>
+        <table class="mini">
+          <thead><tr><th>Run</th><th>Setting</th><th>Seeds</th><th>Machine</th></tr></thead>
+          <tbody>
+            <tr class="rr"><td>baseline</td><td>crop and flip</td><td>1</td><td>GPU 0</td></tr>
+            <tr class="rr"><td>mixup</td><td>+ mixup, α = 0.2</td><td>1</td><td>GPU 1</td></tr>
+          </tbody>
+        </table>
+        <div class="budget">
+          <div class="budget-h"><span>Budget left <b>20</b> GPU-hours</span><span>Stage 1 needs <b>~1 h</b></span></div>
+          <div class="track"><i></i></div>
+          <div class="fit-row"><span class="stamp">The whole stage fits</span><span class="smoke">✓ Smoke run passed</span></div>
+        </div>
+      </article>
+      <div class="gate">
+        <p class="who">You decide</p>
+        <p class="what">Approve the plan, its runs, and every deviation</p>
+        <button class="approve" type="button" aria-disabled="true"><span class="box"><svg viewBox="0 0 20 20"><path d="M4 10.5 L8.5 15 L16 5.5"/></svg></span>Human Approved</button>
+        <p class="click-me" style="visibility:hidden">Click to approve</p>
+        <p class="result" style="visibility:hidden">Approved. The runs start now.</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="v-run">
+  <div class="v">
+    <div class="runwrap">
+      <div class="panes">
+        <span class="stage-tag">Stage 1 · 1 seed · 50 epochs</span>
+        <div class="pane"><div class="pane-h"><b>tmux vrl:baseline</b><span>GPU 0</span></div><div class="bar base"><i></i></div></div>
+        <div class="pane"><div class="pane-h"><b>tmux vrl:mixup</b><span>GPU 1</span></div><div class="bar"><i></i></div></div>
+        <p class="goon">Go on when mixup is not worse: met</p>
+      </div>
+      <div class="chart">
+        <svg width="376" height="230" viewBox="0 0 376 230">
+          <line class="grid" x1="40" y1="60" x2="370" y2="60"/>
+          <line class="grid" x1="40" y1="115" x2="370" y2="115"/>
+          <line class="grid" x1="40" y1="170" x2="370" y2="170"/>
+          <line class="axis" x1="40" y1="14" x2="40" y2="210"/>
+          <line class="axis" x1="40" y1="210" x2="370" y2="210"/>
+          <text class="lbl" x="4" y="64">0.6</text>
+          <text class="lbl" x="4" y="119">0.4</text>
+          <text class="lbl" x="4" y="174">0.2</text>
+          <text class="lbl" x="318" y="228">epochs</text>
+          <path class="c-base" d="M40 52 C70 38 84 92 106 98 S140 76 162 120 S218 136 248 150 S322 158 370 168"/>
+          <path class="c-alt" d="M40 60 C76 74 104 104 132 120 S190 142 232 158 S318 176 370 186"/>
+        </svg>
+        <div class="legend"><span><i style="background:#8c89b8"></i>baseline test error</span><span><i style="background:var(--agent)"></i>mixup test error</span></div>
+        <div class="status-row"><span class="label">Status</span>
+          <span class="pill pill-run"><span class="st-planned">Planned</span><span class="st-running">Running</span><span class="st-finish">Finish</span></span>
+          <span class="stamp outcome">Outcome: Done</span>
+        </div>
+      </div>
+    </div>
+    <div class="report r1"><b>Report · 14:05</b>Epoch 25 of 50, both runs healthy. Next report: after the evaluation at epoch 50.</div>
+    <div class="report r2"><b>Report · 14:52</b>Both runs finished. Next: the analysis.</div>
+  </div>
+</template>
+
+<template id="v-analyze">
+  <div class="v">
+    <div class="anwrap">
+      <div class="barchart">
+        <span class="gl" style="bottom:83px"></span><span class="gl" style="bottom:167px"></span>
+        <span class="yl" style="bottom:0">74%</span><span class="yl" style="bottom:83px">76%</span><span class="yl" style="bottom:167px">78%</span><span class="yl" style="bottom:250px">80%</span>
+        <div class="bc base"></div>
+        <div class="bc alt"></div>
+        <span class="eb e-base" style="left:73px; bottom:88px; height:25px"></span>
+        <span class="eb e-alt" style="left:187px; bottom:163px; height:17px"></span>
+        <span class="bv v-base" style="left:34px; bottom:118px">76.4</span>
+        <span class="bv v-alt" style="left:148px; bottom:184px; color:var(--agent)">78.1</span>
+        <span class="xl" style="left:34px">baseline</span>
+        <span class="xl" style="left:148px">mixup</span>
+      </div>
+      <div>
+        <div class="res-table">
+          <p class="tbl-cap">Table 1. Top-1 accuracy on CIFAR-100, mean ± std over 3 seeds</p>
+          <table class="mini">
+            <thead><tr><th>Run</th><th>Top-1 (%) ↑</th><th>vs baseline</th></tr></thead>
+            <tbody>
+              <tr class="tr1"><td>baseline</td><td>76.4 ± 0.3</td><td>—</td></tr>
+              <tr class="tr1"><td>mixup</td><td class="best">78.1 ± 0.2</td><td>+1.7, p = 0.004</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="decide-row">
+          <div class="diamond"><div></div><span>Stop iterating?</span></div>
+          <svg width="56" height="20" viewBox="0 0 56 20"><path class="arrow-path" d="M2 10 H48 M40 3 L50 10 L40 17"/></svg>
+          <span class="yes">Yes: the success criteria are met</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="v-finding">
+  <div class="v">
+    <div class="split">
+      <article class="page">
+        <div class="pg-top"><span class="db">Findings</span><span class="pill pill-find"><span class="st-review">Under Review</span><span class="st-confirmed">Confirmed</span></span></div>
+        <h3 class="pg-title">Mixup lifts ResNet-18 accuracy on CIFAR-100</h3>
+        <p class="one">On CIFAR-100, mixup with α = 0.2 raises ResNet-18 top-1 accuracy from 76.4% to 78.1%, mean of 3 seeds (p = 0.004). Tested at one model size only <b>(confidence: medium)</b>.</p>
+        <span class="stamp closed">Idea closed: Supported</span>
+      </article>
+      <div class="gate">
+        <p class="who">You decide</p>
+        <p class="what">Confirm the finding, or overturn it</p>
+        <button class="approve" type="button" aria-disabled="true"><span class="box"><svg viewBox="0 0 20 20"><path d="M4 10.5 L8.5 15 L16 5.5"/></svg></span>Confirmed</button>
+        <p class="click-me" style="visibility:hidden">Click to confirm</p>
+        <p class="result" style="visibility:hidden">Confirmed. It now counts as knowledge.</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="v-board">
+  <div class="v">
+    <div class="nwin">
+      <div class="nw-top"><span>Research project</span><span>/</span><span>Experiments</span></div>
+      <div class="nw-head">
+        <h3 class="nw-title">Experiments</h3>
+        <div class="nw-tabs"><span class="on">Board</span><span>Table</span><span>By idea</span></div>
+      </div>
+      <div class="kb">
+        <div class="kcol" style="left:0"><span class="kh st-planned">Planned</span><span class="cnt" data-col="0"></span></div>
+        <div class="kcol" style="left:228px"><span class="kh st-running">Running</span><span class="cnt" data-col="1"></span></div>
+        <div class="kcol" style="left:456px"><span class="kh st-finish">Finish</span><span class="cnt" data-col="2"></span></div>
+        <div class="kcard" data-id="mix"><p class="kt">Mixup vs standard aug, stage 2</p><p class="ki">Idea: mixup on CIFAR-100</p><p class="kp"><span class="pbar"><span class="pb-bg">░░░░░░░░░░</span><span class="pb-fg">██████████</span></span><span class="pnum">30%</span></p><p class="km"><span>Est. 4 h</span><span class="hap on"><span class="cb"><svg viewBox="0 0 12 12"><path d="M2.5 6.5 L5 9 L9.5 3.5"/></svg></span>Approved</span></p><span class="oc">Done</span></div>
+        <div class="kcard" data-id="clip"><p class="kt">Gradient clipping at 1.0, stage 1</p><p class="ki">Idea: clipping for GPT-2 small</p><p class="kp"><span class="pbar"><span class="pb-bg">░░░░░░░░░░</span><span class="pb-fg">██████████</span></span><span class="pnum">60%</span></p><p class="km"><span>Est. 2 h</span><span class="hap on"><span class="cb"><svg viewBox="0 0 12 12"><path d="M2.5 6.5 L5 9 L9.5 3.5"/></svg></span>Approved</span></p><span class="oc">Done</span></div>
+        <div class="kcard" data-id="wd"><p class="kt">Weight decay sweep, stage 1</p><p class="ki">Idea: weight decay for ViT-S</p><p class="kp"><span class="pbar"><span class="pb-bg">░░░░░░░░░░</span><span class="pb-fg">██████████</span></span><span class="pnum">0%</span></p><p class="km"><span>Est. 3 h</span><span class="hap"><span class="cb"><svg viewBox="0 0 12 12"><path d="M2.5 6.5 L5 9 L9.5 3.5"/></svg></span>Approved</span></p><span class="oc">Done</span></div>
+        <div class="kcard" data-id="ls"><p class="kt">Label smoothing 0.1, stage 1</p><p class="ki">Idea: label smoothing on ImageNet</p><p class="kp"><span class="pbar"><span class="pb-bg">░░░░░░░░░░</span><span class="pb-fg">██████████</span></span><span class="pnum">0%</span></p><p class="km"><span>Est. 6 h</span><span class="hap"><span class="cb"><svg viewBox="0 0 12 12"><path d="M2.5 6.5 L5 9 L9.5 3.5"/></svg></span>Approved</span></p><span class="oc">Done</span></div>
+        <div class="kcard" data-id="cut"><p class="kt">CutMix against mixup, stage 1</p><p class="ki">Idea: CutMix on CIFAR-100</p><p class="kp"><span class="pbar"><span class="pb-bg">░░░░░░░░░░</span><span class="pb-fg">██████████</span></span><span class="pnum">100%</span></p><p class="km"><span>Est. 1 h</span><span class="hap on"><span class="cb"><svg viewBox="0 0 12 12"><path d="M2.5 6.5 L5 9 L9.5 3.5"/></svg></span>Approved</span></p><span class="oc" style="visibility:visible">Done</span></div>
+        <div class="kcard" data-id="sam"><p class="kt">SAM against SGD, stage 1</p><p class="ki">Idea: SAM for ResNet-50</p><p class="kp"><span class="pbar"><span class="pb-bg">░░░░░░░░░░</span><span class="pb-fg">██████████</span></span><span class="pnum">0%</span></p><p class="km"><span>Est. 5 h</span><span class="hap"><span class="cb"><svg viewBox="0 0 12 12"><path d="M2.5 6.5 L5 9 L9.5 3.5"/></svg></span>Approved</span></p><span class="oc">Done</span></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="v-review">
+  <div class="v">
+    <div class="revwrap">
+      <article class="page p-rev">
+        <div class="pg-top"><span class="db">Experiments</span><span>Results and analysis</span></div>
+        <p class="txt">Mixup raised top-1 accuracy by <button class="mk r" data-k="r" type="button">3.4 points</button>. It blends <button class="mk o" data-k="o" type="button">pairs of samples with α = 0.2</button>. <button class="mk p" data-k="p" type="button">So it will help on every dataset.</button></p>
+        <div class="legend3"><span class="lg-r">Red: wrong</span><span class="lg-o">Orange: unclear</span><span class="lg-p">Purple: not acceptable</span></div>
+      </article>
+      <div class="replies">
+        <div class="reply" data-k="r"><span class="tag r">Red · fixed</span><p>The gain is 1.7 points, from Table 1. I corrected it.</p></div>
+        <div class="reply" data-k="o"><span class="tag o">Orange · explained</span><p>Each image is blended with another, and so are their labels, by the same weight. I rewrote it that way.</p></div>
+        <div class="reply" data-k="p"><span class="tag p">Purple · proposed</span><p>Limit it to CIFAR-100 with ResNet-18, the only setting tested? Your mark stays until you decide.</p></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="v-remote">
+  <div class="v">
+    <div class="remwrap">
+      <div class="host">
+        <h3>Your laptop</h3>
+        <p>agent · rules<br>files via SSHFS<br>no GPU</p>
+      </div>
+      <div class="tube">
+        <span class="tube-label">ssh gpu-box · one master</span>
+        <div class="pipe"></div>
+        <div class="core"></div>
+        <div class="hbwrap"><span class="hb"></span><span class="hb"></span><span class="hb"></span></div>
+        <span class="packet go">run train.sh →</span>
+        <span class="packet back">← epoch 12, loss 1.31</span>
+      </div>
+      <div class="host hpc">
+        <h3>gpu-box</h3>
+        <div class="gpus"><i></i><i></i><i></i><i></i></div>
+        <p>code · data · runs</p>
+        <div><span class="win">vrl:baseline</span><span class="win">vrl:mixup</span></div>
+      </div>
+    </div>
+    <div class="facts">
+      <div class="fact"><b>One connection</b>Every command and the mount share one SSH master.</div>
+      <div class="fact"><b>Time limits</b>A dead link ends a call; it cannot hang the session.</div>
+      <div class="fact"><b>tmux</b>Long jobs keep running when the link drops.</div>
+    </div>
+  </div>
+</template>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
 (function () {
   "use strict";
-  var FPS = 30;
-  var TOTAL = 72;
-  var POSTER = 3.1;
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var SCENES = [
-    { id: "s0", name: "Title", start: 0, end: 4, label: "#A89677" },
-    { id: "s1", name: "Install", start: 4, end: 10, label: "#A9CBC7" },
-    { id: "s2", name: "Set up", start: 10, end: 16, label: "#677DE0" },
-    { id: "s3", name: "Propose idea", start: 16, end: 22, label: "#4AA44C" },
-    { id: "s4", name: "Plan experiment", start: 22, end: 28, label: "#B3C7B3" },
-    { id: "s5", name: "Run experiment", start: 28, end: 34, label: "#3DA2A5" },
-    { id: "s6", name: "Analyze results", start: 34, end: 40, label: "#E4D84C" },
-    { id: "s7", name: "Write finding", start: 40, end: 46, label: "#E7C19E" },
-    { id: "s8", name: "Notion board", start: 46, end: 55, label: "#F46DD6" },
-    { id: "s9", name: "Review by color", start: 55, end: 61, label: "#E5BCC9" },
-    { id: "s10", name: "Remote mode", start: 61, end: 67, label: "#E8920D" },
-    { id: "s11", name: "End card", start: 67, end: 72, label: "#A9A9CA" }
-  ];
-
+  var W = 760, H = 540;
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
 
-  var stage = $("#stage");
-  var viewer = $("#viewer");
-
-  /* ---- Fit the 1280x720 comp into the viewer, like "Fit" magnification ---- */
-  var scale = 1;
-  function fit() {
-    scale = viewer.clientWidth / 1280;
-    stage.style.transform = "scale(" + scale + ")";
-    $("#mag").textContent = "Fit (" + Math.round(scale * 100) + "%)";
-  }
-  fit();
-  if (window.ResizeObserver) { new ResizeObserver(fit).observe(viewer); } else { window.addEventListener("resize", fit); }
-
-  /* ---- Timeline panel ---- */
-  var namesEl = $("#tlNames"), lanesEl = $("#tlLanes"), ruler = $("#ruler");
-  SCENES.forEach(function (s, i) {
-    var n = document.createElement("div");
-    n.className = "tl-name"; n.dataset.id = s.id;
-    n.innerHTML = '<span class="num">' + (i + 1) + '</span><i style="background:' + s.label + '"></i><span>' + s.name + "</span>";
-    namesEl.appendChild(n);
-    var lane = document.createElement("div");
-    lane.className = "tl-lane"; lane.dataset.id = s.id;
-    var b = document.createElement("button");
-    b.className = "tl-bar"; b.type = "button";
-    b.style.left = (s.start / TOTAL * 100) + "%";
-    b.style.width = ((s.end - s.start) / TOTAL * 100) + "%";
-    b.style.setProperty("--c", s.label);
-    b.setAttribute("aria-label", "Jump to " + s.name);
-    b.innerHTML = '<span class="kf l"></span><span class="kf r"></span>';
-    b.addEventListener("click", function (e) { e.stopPropagation(); seek(s.start + 0.02, false); });
-    lane.appendChild(b);
-    lanesEl.appendChild(lane);
-  });
-  for (var sec = 0; sec <= TOTAL; sec++) {
-    var tk = document.createElement("span");
-    var major = sec % 5 === 0;
-    tk.className = "tick" + (major ? " major" : "");
-    tk.style.left = (sec / TOTAL * 100) + "%";
-    if (major && sec < TOTAL) { tk.innerHTML = "<span>" + (sec < 10 ? "0" + sec : sec) + "s</span>"; }
-    ruler.appendChild(tk);
+  /* ---- Pure helpers ---- */
+  function prepDraw(p) { var L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; }
+  function draw(t, p, d, pos) { prepDraw(p); t.to(p, { strokeDashoffset: 0, duration: d, ease: "power2.inOut" }, pos); }
+  function pill(t, el, pos) {
+    // Show the next state of a stacked status pill.
+    var spans = $$(":scope > span", el), state = el._state || 0;
+    if (!el._init) { el._init = true; spans.forEach(function (s, i) { if (i) gsap.set(s, { autoAlpha: 0, yPercent: 100 }); }); }
+    var a = spans[state], b = spans[state + 1];
+    el._state = state + 1;
+    t.to(a, { yPercent: -100, autoAlpha: 0, duration: .35, ease: "power2.in" }, pos)
+     .to(b, { yPercent: 0, autoAlpha: 1, duration: .35, ease: "power2.out" }, "<.15");
   }
 
-  /* ---- Build the composition ---- */
-  var tl = gsap.timeline({ paused: true, repeat: -1, defaults: { duration: 0.8, ease: "expo.out" } });
-
-  $$(".draw").forEach(function (p) {
-    var L = Math.ceil(p.getTotalLength ? p.getTotalLength() : 600) + 2;
-    p.style.strokeDasharray = L;
-    p.style.strokeDashoffset = L;
-    p.dataset.len = L;
-  });
-  function draw(target, t, d, ease, stagger) {
-    var els = typeof target === "string" ? $$(target) : [target];
-    els.forEach(function (p, i) {
-      var L = +p.dataset.len;
-      tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: d || 0.9, ease: ease || "power2.inOut" }, t + (stagger || 0) * i);
-    });
-  }
-  function typeIn(el, t, cps) {
-    var n = el.textContent.length;
-    var d = n / (cps || 30);
-    tl.fromTo(el, { width: "0ch" }, { width: n + "ch", duration: d, ease: "steps(" + n + ")" }, t);
-    return t + d;
-  }
-  function blurIn(target, t, from, d) {
-    var f = Object.assign({ autoAlpha: 0, filter: "blur(12px)" }, from || {});
-    var to = { autoAlpha: 1, filter: "blur(0px)", duration: d || 0.8 };
-    Object.keys(from || {}).forEach(function (k) {
-      if (k === "x" || k === "y" || k === "rotationX" || k === "rotationY" || k === "rotation") { to[k] = 0; }
-      if (k === "scale") { to[k] = 1; }
-    });
-    tl.fromTo(target, f, to, t);
-  }
-  function clipIn(target, t, d) {
-    tl.fromTo(target, { clipPath: "inset(0% 100% 0% 0%)", x: -24 }, { clipPath: "inset(0% 0% 0% 0%)", x: 0, duration: d || 0.9, ease: "expo.out" }, t);
-  }
-  function swap(a, b, t) {
-    tl.fromTo(a, { yPercent: 0 }, { yPercent: -110, duration: 0.45, ease: "power3.inOut" }, t);
-    tl.fromTo(b, { yPercent: 110 }, { yPercent: 0, duration: 0.45, ease: "power3.inOut" }, t);
-  }
-  function slam(target, t, rot) {
-    tl.fromTo(target, { autoAlpha: 0, scale: 2.2, rotation: (rot || -6) - 10 }, { autoAlpha: 1, scale: 1, rotation: rot || -6, duration: 0.32, ease: "power4.in" }, t);
-  }
-  function click(scene, t) {
-    var cur = $(scene + " .cursor"), rip = $(scene + " .ripple"), tick = $(scene + " .box .draw");
-    tl.fromTo(cur, { x: -300, y: 230, autoAlpha: 0 }, { x: 0, y: 0, autoAlpha: 1, duration: 0.8, ease: "power3.inOut" }, t);
-    tl.fromTo(cur, { scale: 1 }, { scale: 0.86, duration: 0.08, yoyo: true, repeat: 1, ease: "power1.inOut" }, t + 0.8);
-    tl.fromTo(rip, { scale: 0.3, autoAlpha: 0 }, { autoAlpha: 0.9, duration: 0.05 }, t + 0.82);
-    tl.to(rip, { scale: 1.6, autoAlpha: 0, duration: 0.5, ease: "power2.out" }, t + 0.87);
-    draw(tick, t + 0.86, 0.32, "power2.out");
-    tl.fromTo(scene + " .gate", { boxShadow: "0 0 0 0 rgba(185,165,255,0)" }, { boxShadow: "0 0 0 10px rgba(185,165,255,0)", duration: 0.6, ease: "power2.out" }, t + 0.9);
-    tl.to(cur, { autoAlpha: 0, x: 40, y: 30, duration: 0.5, ease: "power2.in" }, t + 1.5);
-  }
-
-  // Scene visibility, with an AE-style blur push on the way out
-  SCENES.forEach(function (s) {
-    tl.set("#" + s.id, { autoAlpha: 1 }, s.start);
-    var out = s.id === "s11"
-      ? { autoAlpha: 0, duration: 0.5, ease: "power1.in" }
-      : { autoAlpha: 0, scale: 1.05, filter: "blur(14px)", duration: 0.5, ease: "power2.in" };
-    tl.fromTo("#" + s.id, { scale: 1, filter: "blur(0px)" }, out, s.end - 0.5);
-  });
-
-  // 0. Title
-  tl.fromTo("#s0 .eyebrow", { autoAlpha: 0, letterSpacing: "0.6em" }, { autoAlpha: 1, letterSpacing: "0.16em", duration: 1.3 }, 0.15);
-  tl.fromTo("#s0 .m1", { yPercent: 110 }, { yPercent: 0, duration: 1.0 }, 0.25);
-  tl.fromTo("#s0 .m1", { fontVariationSettings: '"wdth" 62, "wght" 300' }, { fontVariationSettings: '"wdth" 100, "wght" 820', duration: 1.5, ease: "power3.out" }, 0.25);
-  tl.fromTo("#s0 .m2", { yPercent: 110 }, { yPercent: 0, duration: 1.0 }, 0.45);
-  tl.fromTo("#s0 .m2", { fontVariationSettings: '"wdth" 62, "wght" 300' }, { fontVariationSettings: '"wdth" 125, "wght" 900', duration: 1.6, ease: "power3.out" }, 0.45);
-  tl.fromTo("#s0 .m2", { backgroundSize: "0% 100%" }, { backgroundSize: "100% 100%", duration: 0.9, ease: "power2.inOut" }, 1.25);
-  draw("#s0 .loopmark .draw", 0.85, 1.1, "power3.inOut");
-  tl.fromTo("#s0 .head-tri", { autoAlpha: 0, scale: 0.4, transformOrigin: "50% 50%" }, { autoAlpha: 1, scale: 1, duration: 0.5, ease: "back.out(2)" }, 1.75);
-  draw("#s0 .rule .draw", 1.1, 1.0, "power3.inOut");
-  blurIn("#s0 .sub", 1.55, { y: 14 });
-
-  // 1. Install
-  blurIn("#s1 .eyebrow", 4.15, { x: -30 });
-  clipIn("#s1 .head", 4.25);
-  tl.fromTo("#s1 .term", { autoAlpha: 0, y: 40, rotationX: 18, scale: 0.96, transformPerspective: 1200 }, { autoAlpha: 1, y: 0, rotationX: 0, scale: 1, duration: 1.0 }, 4.4);
-  var types1 = $$("#s1 .type");
-  tl.set("#s1 .c2", { autoAlpha: 0 }, 0);
-  var e1 = typeIn(types1[0], 4.95, 30);
-  tl.set("#s1 .c1", { autoAlpha: 0 }, e1 + 0.05);
-  tl.set("#s1 .c2", { autoAlpha: 1 }, e1 + 0.05);
-  var e2 = typeIn(types1[1], e1 + 0.1, 30);
-  tl.set("#s1 .c2", { autoAlpha: 0 }, e2 + 0.1);
-  blurIn("#s1 .o1", e2 + 0.15, { x: -10 }, 0.5);
-  blurIn("#s1 .o2", e2 + 0.45, { x: -10 }, 0.5);
-  blurIn("#s1 .o3", e2 + 0.7, { x: -10 }, 0.5);
-  blurIn("#s1 .chips-label", 8.0, { x: 20 }, 0.5);
-  tl.fromTo("#s1 .chip", { autoAlpha: 0, x: 40, scale: 0.8 }, { autoAlpha: 1, x: 0, scale: 1, duration: 0.6, ease: "back.out(1.6)", stagger: 0.07 }, 8.15);
-  blurIn("#s1 .cap", 8.6, { y: 10 });
-
-  // 2. Set up
-  blurIn("#s2 .eyebrow", 10.15, { x: -30 });
-  blurIn("#s2 .cmd-line", 10.2, { x: -20 }, 0.4);
-  typeIn($("#s2 .cmd-line .type"), 10.35, 30);
-  blurIn("#s2 .col-h", 10.9, { y: 10 }, 0.5);
-  tl.fromTo("#s2 .tr", { autoAlpha: 0, x: -16 }, { autoAlpha: 1, x: 0, duration: 0.5, stagger: 0.09 }, 11.0);
-  tl.fromTo("#s2 .db-card", { autoAlpha: 0, y: 30, rotationY: -28, transformPerspective: 900 }, { autoAlpha: 1, y: 0, rotationY: 0, duration: 0.9, stagger: 0.12 }, 11.3);
-  tl.fromTo("#s2 .cli", { autoAlpha: 0, x: 24 }, { autoAlpha: 1, x: 0, duration: 0.5, stagger: 0.15 }, 11.9);
-  draw("#s2 .cli .draw", 12.1, 0.35, "power2.out", 0.15);
-  blurIn("#s2 .cap", 12.8, { y: 10 });
-
-  // 3. Propose idea
-  blurIn("#s3 .eyebrow", 16.15, { x: -30 });
-  tl.fromTo("#s3 .page", { autoAlpha: 0, y: 70, rotationX: 24, transformPerspective: 1400, filter: "blur(10px)" }, { autoAlpha: 1, y: 0, rotationX: 0, filter: "blur(0px)", duration: 1.1 }, 16.25);
-  clipIn("#s3 .pg-title", 16.6);
-  tl.fromTo("#s3 .lt", { autoAlpha: 0, x: -14 }, { autoAlpha: 1, x: 0, duration: 0.5, stagger: 0.12 }, 16.95);
-  blurIn("#s3 .tbl-cap", 17.6, { y: 8 }, 0.4);
-  tl.fromTo("#s3 .mini thead, #s3 .sr", { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.45, stagger: 0.12 }, 17.7);
-  blurIn("#s3 .gate", 18.3, { x: 40 });
-  blurIn("#s3 .cap", 18.7, { y: 10 });
-  click("#s3", 19.0);
-
-  // 4. Plan experiment
-  blurIn("#s4 .eyebrow", 22.1, { x: -30 });
-  tl.fromTo("#s4 .page", { autoAlpha: 0, x: 240, filter: "blur(12px)" }, { autoAlpha: 1, x: 0, filter: "blur(0px)", duration: 1.0 }, 22.15);
-  clipIn("#s4 .pg-title", 22.55);
-  swap("#s4 .pill-idea .a", "#s4 .pill-idea .b", 22.95);
-  tl.fromTo("#s4 .mini thead, #s4 .rr", { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.45, stagger: 0.12 }, 23.0);
-  blurIn("#s4 .budget-h", 23.6, { y: 8 }, 0.45);
-  tl.fromTo("#s4 .track .fill", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "power3.out" }, 23.85);
-  slam("#s4 .st1", 24.5, -4);
-  blurIn("#s4 .smoke", 24.9, { x: -10 }, 0.4);
-  blurIn("#s4 .gate", 25.1, { x: 40 });
-  blurIn("#s4 .cap", 25.3, { y: 10 });
-  click("#s4", 25.6);
-
-  // 5. Run experiment
-  blurIn("#s5 .eyebrow", 28.1, { x: -30 });
-  tl.fromTo("#s5 .stage-tag, #s5 .pane", { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.12 }, 28.2);
-  blurIn("#s5 .chart", 28.35, { y: 20 }, 0.7);
-  swap("#s5 .pill-run .a", "#s5 .pill-run .b", 28.6);
-  tl.fromTo("#s5 .pill-run .c", { yPercent: 110 }, { yPercent: 0, duration: 0.45, ease: "power3.inOut" }, 32.7);
-  tl.fromTo("#s5 .pill-run .b", { yPercent: 0 }, { yPercent: -110, duration: 0.45, ease: "power3.inOut", immediateRender: false }, 32.7);
-  tl.fromTo("#s5 .bar i", { scaleX: 0 }, { scaleX: 1, duration: 1.2, ease: "power1.inOut", stagger: 0.1 }, 28.6);
-  blurIn("#s5 .goon", 29.85, { x: -10 }, 0.4);
-  swap("#s5 .stage-tag .a", "#s5 .stage-tag .b", 30.5);
-  tl.to("#s5 .goon", { autoAlpha: 0, duration: 0.3 }, 30.5);
-  tl.fromTo("#s5 .bar i", { scaleX: 1 }, { scaleX: 0, duration: 0.2, ease: "power2.in", immediateRender: false }, 30.5);
-  tl.fromTo("#s5 .bar i", { scaleX: 0 }, { scaleX: 1, duration: 1.8, ease: "power1.inOut", stagger: 0.1, immediateRender: false }, 30.8);
-  draw("#s5 .c-base", 30.8, 1.8, "none");
-  draw("#s5 .c-alt", 30.9, 1.8, "none");
-  slam("#s5 .outcome", 32.95, -4);
-  blurIn("#s5 .cap", 31.0, { y: 10 });
-
-  // 6. Analyze results
-  blurIn("#s6 .eyebrow", 34.1, { x: -30 });
-  tl.fromTo("#s6 .gl, #s6 .yl", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, stagger: 0.04 }, 34.2);
-  tl.fromTo("#s6 .bc", { scaleY: 0 }, { scaleY: 1, duration: 0.9, stagger: 0.18 }, 34.4);
-  tl.fromTo("#s6 .xl", { autoAlpha: 0, y: -6 }, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.1 }, 34.6);
-  tl.fromTo("#s6 .eb", { autoAlpha: 0, scaleY: 0 }, { autoAlpha: 1, scaleY: 1, duration: 0.4, stagger: 0.12 }, 35.2);
-  tl.fromTo("#s6 .bv", { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.12 }, 35.3);
-  tl.fromTo("#s6 .t1", { autoAlpha: 0, x: 60, rotationY: -18, transformPerspective: 1200 }, { autoAlpha: 1, x: 0, rotationY: 0, duration: 0.9 }, 35.5);
-  tl.fromTo("#s6 .tr1", { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.15 }, 35.9);
-  tl.fromTo("#s6 .diamond", { autoAlpha: 0, scale: 0.4, rotation: -45 }, { autoAlpha: 1, scale: 1, rotation: 0, duration: 0.7, ease: "back.out(1.8)" }, 36.6);
-  draw("#s6 .arrow", 37.1, 0.4, "power2.out");
-  blurIn("#s6 .yes", 37.35, { x: -16 }, 0.5);
-  blurIn("#s6 .cap", 37.0, { y: 10 });
-
-  // 7. Write finding
-  blurIn("#s7 .eyebrow", 40.1, { x: -30 });
-  tl.fromTo("#s7 .page", { autoAlpha: 0, y: 60, rotationX: 22, transformPerspective: 1400, filter: "blur(10px)" }, { autoAlpha: 1, y: 0, rotationX: 0, filter: "blur(0px)", duration: 1.1 }, 40.2);
-  clipIn("#s7 .pg-title", 40.55);
-  blurIn("#s7 .one", 40.9, { y: 10 }, 0.7);
-  blurIn("#s7 .gate", 41.5, { x: 40 });
-  click("#s7", 41.9);
-  swap("#s7 .pill-find .a", "#s7 .pill-find .b", 42.85);
-  slam("#s7 .closed", 43.4, -4);
-  blurIn("#s7 .cap", 43.8, { y: 10 });
-
-  // 8. Notion board: cards sit at column and slot positions and move between them
-  var COLX = [0, 354, 708];
-  function slotY(n) { return 46 + n * 110; }
-  $$("#s8 .kcard").forEach(function (c) { gsap.set(c, { x: COLX[+c.dataset.col], y: slotY(+c.dataset.slot) }); });
-  function seq(sel, times) {
-    var spans = $$(sel + " > span");
-    times.forEach(function (at, i) { tl.set(spans[i], { autoAlpha: 0 }, at); tl.set(spans[i + 1], { autoAlpha: 1 }, at); });
-  }
-  var lift = 10;
-  function moveCard(sel, col, slot, at) {
-    // Like a drag in Notion: the card rises above the others, tilts, travels, and settles.
-    tl.set(sel, { zIndex: ++lift }, at);
-    tl.to(sel, { x: COLX[col], y: slotY(slot), duration: 0.8, ease: "power3.inOut" }, at);
-    tl.to(sel, { scale: 1.04, rotation: 1.5, boxShadow: "0 18px 40px rgba(15,15,15,.22)", duration: 0.25, ease: "power2.out" }, at);
-    tl.to(sel, { scale: 1, rotation: 0, boxShadow: "0 0 0 1px rgba(15,15,15,.09), 0 2px 5px rgba(15,15,15,.08)", duration: 0.3, ease: "power2.in" }, at + 0.55);
-  }
-  function done(sel, at) { tl.fromTo(sel + " .oc", { autoAlpha: 0, scale: 0.6 }, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at); }
-  blurIn("#s8 .eyebrow", 46.1, { x: -30 });
-  tl.fromTo("#s8 .nwin", { autoAlpha: 0, y: 50, rotationX: 14, transformPerspective: 1400, filter: "blur(10px)" }, { autoAlpha: 1, y: 0, rotationX: 0, filter: "blur(0px)", duration: 1.0 }, 46.2);
-  clipIn("#s8 .nw-title", 46.5);
-  tl.fromTo("#s8 .nw-tabs > span", { autoAlpha: 0, y: -6 }, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.06 }, 46.6);
-  tl.fromTo("#s8 .kcol", { autoAlpha: 0, y: -10 }, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.1 }, 46.7);
-  tl.fromTo("#s8 .kcard:not(#kc-cut)", { autoAlpha: 0, scale: 0.92, rotation: -2 }, { autoAlpha: 1, scale: 1, rotation: 0, duration: 0.6, ease: "back.out(1.6)", stagger: 0.08 }, 46.9);
-  // two runs progress side by side
-  tl.fromTo("#kc-mix .pb-fg", { width: "3ch" }, { width: "10ch", duration: 4.2, ease: "steps(7)" }, 47.4);
-  seq("#kc-mix .pnum", [49.5, 51.6]);
-  tl.fromTo("#kc-clip .pb-fg", { width: "6ch" }, { width: "10ch", duration: 1.8, ease: "steps(4)" }, 47.4);
-  seq("#kc-clip .pnum", [49.2]);
-  // clipping finishes
-  moveCard("#kc-clip", 2, 1, 49.4);
-  done("#kc-clip", 50.2);
-  // you approve the weight decay sweep, and it starts
-  draw("#kc-wd .cb .draw", 49.9, 0.3, "power2.out");
-  tl.fromTo("#kc-wd .cb", { backgroundColor: "rgba(35,131,226,0)", borderColor: "#9b9a97" }, { backgroundColor: "rgba(35,131,226,1)", borderColor: "#2383e2", duration: 0.2 }, 49.9);
-  moveCard("#kc-wd", 1, 1, 50.2);
-  moveCard("#kc-ls", 0, 0, 50.3);
-  tl.fromTo("#kc-wd .pb-fg", { width: "0ch" }, { width: "4ch", duration: 3.1, ease: "steps(4)" }, 50.9);
-  seq("#kc-wd .pnum", [52.4, 54.0]);
-  // mixup finishes, and a new experiment arrives
-  moveCard("#kc-mix", 2, 2, 51.8);
-  moveCard("#kc-wd", 1, 0, 51.9);
-  done("#kc-mix", 52.6);
-  tl.fromTo("#kc-cut", { autoAlpha: 0, scale: 0.9 }, { autoAlpha: 1, scale: 1, duration: 0.6, ease: "back.out(1.6)" }, 52.6);
-  seq("#s8 .kcol.plan .cnt", [50.2, 52.6]);
-  seq("#s8 .kcol.run .cnt", [49.4, 50.2, 51.8]);
-  seq("#s8 .kcol.fin .cnt", [49.4, 51.8]);
-  blurIn("#s8 .cap", 53.0, { y: 10 });
-
-  // 9. Review by color
-  blurIn("#s9 .eyebrow", 55.1, { x: -30 });
-  clipIn("#s9 .head", 55.2);
-  tl.fromTo("#s9 .page", { autoAlpha: 0, y: 40, filter: "blur(10px)" }, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.9 }, 55.4);
-  tl.fromTo("#s9 .legend3 span", { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.1 }, 55.8);
-  [["r", 56.3, ".rp1"], ["o", 57.3, ".rp2"], ["p", 58.3, ".rp3"]].forEach(function (m) {
-    tl.fromTo("#s9 .mk." + m[0], { backgroundSize: "0% 100%" }, { backgroundSize: "100% 100%", duration: 0.45, ease: "power2.out" }, m[1]);
-    tl.fromTo("#s9 " + m[2], { autoAlpha: 0, x: 30, scale: 0.94 }, { autoAlpha: 1, x: 0, scale: 1, duration: 0.6, ease: "back.out(1.5)" }, m[1] + 0.35);
-  });
-
-  // 10. Remote mode
-  blurIn("#s10 .eyebrow", 61.1, { x: -30 });
-  clipIn("#s10 .head", 61.2);
-  tl.fromTo("#s10 .local", { autoAlpha: 0, x: -60 }, { autoAlpha: 1, x: 0, duration: 0.9 }, 61.4);
-  tl.fromTo("#s10 .hpc", { autoAlpha: 0, x: 60 }, { autoAlpha: 1, x: 0, duration: 0.9 }, 61.5);
-  tl.fromTo("#s10 .pipe", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4 }, 61.8);
-  tl.fromTo("#s10 .core", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "power2.inOut" }, 61.8);
-  blurIn("#s10 .tube-label", 62.3, { y: -8 }, 0.5);
-  tl.fromTo("#s10 .hb", { left: "0%", xPercent: 0 }, { left: "100%", xPercent: -100, duration: 1.05, ease: "none", stagger: 0.42, repeat: 2 }, 62.4);
-  tl.set("#s10 .hb", { autoAlpha: 1 }, 62.4);
-  tl.fromTo("#s10 .packet.go", { autoAlpha: 0, left: "0%", xPercent: 0 }, { autoAlpha: 1, duration: 0.2 }, 63.0);
-  tl.to("#s10 .packet.go", { left: "100%", xPercent: -100, duration: 1.0, ease: "power2.inOut" }, 63.2);
-  tl.to("#s10 .packet.go", { autoAlpha: 0, duration: 0.2 }, 64.2);
-  tl.fromTo("#s10 .win", { autoAlpha: 0, scale: 0.7 }, { autoAlpha: 1, scale: 1, duration: 0.45, ease: "back.out(2)", stagger: 0.12 }, 64.0);
-  tl.fromTo("#s10 .packet.back", { autoAlpha: 0, left: "100%", xPercent: -100 }, { autoAlpha: 1, duration: 0.2 }, 64.4);
-  tl.to("#s10 .packet.back", { left: "0%", xPercent: 0, duration: 0.9, ease: "power2.inOut" }, 64.6);
-  tl.to("#s10 .packet.back", { autoAlpha: 0, duration: 0.2 }, 65.7);
-  blurIn("#s10 .cap", 64.6, { y: 10 });
-
-  // 11. End card
-  blurIn("#s11 .eyebrow", 67.15, { y: 10 }, 0.6);
-  tl.fromTo("#s11 .e1", { autoAlpha: 0, yPercent: 40, fontVariationSettings: '"wdth" 62, "wght" 300' }, { autoAlpha: 1, yPercent: 0, fontVariationSettings: '"wdth" 100, "wght" 860', duration: 1.2 }, 67.25);
-  blurIn("#s11 .prompt-pill", 67.8, { y: 20 }, 0.8);
-  tl.fromTo("#s11 .end-meta span", { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.1 }, 68.2);
-  tl.set({}, {}, TOTAL);
-
-  /* ---- Ambient layers outside the timeline ---- */
-  if (!reduce) {
-    gsap.to(".leak.a", { x: 120, y: 60, duration: 9, ease: "sine.inOut", yoyo: true, repeat: -1 });
-    gsap.to(".leak.b", { x: -100, y: -50, duration: 11, ease: "sine.inOut", yoyo: true, repeat: -1 });
-  }
-
-  /* ---- Transport and timeline UI ---- */
-  var tc = $("#tc"), tcSmall = $("#tcSmall"), frames = $("#frames"), cti = $("#cti");
-  var bPlay = $("#bPlay"), iPlay = $("#iPlay"), nowName = $("#nowName"), nowSw = $("#nowSw");
-  var nameRows = $$(".tl-name"), laneRows = $$(".tl-lane");
-  var PLAY_ICON = '<path d="M3 1l10 6-10 6z"/>', PAUSE_ICON = '<path d="M2 1h3.5v12H2zM8.5 1H12v12H8.5z"/>';
-  var lastScene = -1, lastPlaying = null;
-
-  function pad(n, w) { n = String(n); while (n.length < w) { n = "0" + n; } return n; }
-  function timecode(t) {
-    var f = Math.round(t * FPS);
-    var ff = f % FPS, s = Math.floor(f / FPS) % 60, m = Math.floor(f / (FPS * 60)) % 60, h = Math.floor(f / (FPS * 3600));
-    return h + ":" + pad(m, 2) + ":" + pad(s, 2) + ":" + pad(ff, 2);
-  }
-  function sceneAt(t) {
-    for (var i = SCENES.length - 1; i >= 0; i--) { if (t >= SCENES[i].start) { return i; } }
-    return 0;
-  }
-  function update() {
-    var t = tl.time();
-    var code = timecode(t);
-    tc.textContent = code;
-    tcSmall.textContent = code;
-    frames.textContent = pad(Math.round(t * FPS), 5) + " (30.00 fps)";
-    cti.style.left = (t / TOTAL * 100) + "%";
-    var si = sceneAt(t);
-    if (si !== lastScene) {
-      lastScene = si;
-      nowName.textContent = SCENES[si].name;
-      nowSw.style.background = SCENES[si].label;
-      nameRows.forEach(function (r, i) { r.classList.toggle("on", i === si); });
-      laneRows.forEach(function (r, i) { r.classList.toggle("on", i === si); });
+  /* ---- Scenes: each builds its timelines paused, and plays when its section comes into view ---- */
+  var scenes = {
+    install: function (r, X) {
+      var t = X.tl();
+      t.from($(".term", r), { autoAlpha: 0, y: 16, duration: .6 })
+       .to($(".t1", r), { width: "37ch", duration: 1.5, ease: "steps(37)" }, "+=.2")
+       .set($(".c1", r), { display: "none" })
+       .set($(".c2", r), { display: "inline-block" })
+       .to($(".t2", r), { width: "42ch", duration: 1.6, ease: "steps(42)" })
+       .set($(".c2", r), { display: "none" }, "+=.3")
+       .from($(".o1", r), { autoAlpha: 0, y: 6, duration: .4 })
+       .from($(".o2", r), { autoAlpha: 0, y: 6, duration: .4 }, "+=.7")
+       .from($(".o3", r), { autoAlpha: 0, y: 6, duration: .4 }, "+=.2")
+       .from($(".chips-label", r), { autoAlpha: 0, duration: .4 }, "+=.2")
+       .from($$(".chip", r), { autoAlpha: 0, y: 10, scale: .92, stagger: .14, duration: .4 }, "<");
+      X.play = function () { X.run(t, X.done); };
+    },
+    setup: function (r, X) {
+      var t = X.tl();
+      t.to($(".t1", r), { width: "19ch", duration: 1.2, ease: "steps(19)" }, .3)
+       .from($(".ftree", r), { autoAlpha: 0, y: 12, duration: .5 }, "+=.2")
+       .from($$(".tl", r), { autoAlpha: 0, x: -8, stagger: .16, duration: .3 }, "+=.1")
+       .from($$(".setup-side .col-h", r)[0], { autoAlpha: 0, y: 6, duration: .35 }, "-=1.2")
+       .from($$(".db-card", r), { autoAlpha: 0, y: 12, scale: .94, stagger: .18, duration: .4 }, "<.1")
+       .from($(".tools-h", r), { autoAlpha: 0, y: 6, duration: .35 }, "+=.2");
+      $$(".cli", r).forEach(function (c, i) {
+        t.from(c, { autoAlpha: 0, x: 10, duration: .3 }, i ? "+=.12" : "+=.05");
+        draw(t, $("path", c), .35, "<.12");
+      });
+      X.play = function () { X.run(t, X.done); };
+    },
+    propose: function (r, X) {
+      var pre = X.tl(), post = X.tl();
+      pre.from($(".page", r), { autoAlpha: 0, y: 20, duration: .6 })
+         .from($(".pg-title", r), { autoAlpha: 0, y: 8, duration: .45 }, "+=.1")
+         .from($$(".lt", r), { autoAlpha: 0, x: -10, stagger: .35, duration: .4 }, "+=.2")
+         .from($(".tbl-cap", r), { autoAlpha: 0, duration: .35 }, "+=.2")
+         .from($$(".sr", r), { autoAlpha: 0, y: 6, stagger: .3, duration: .4 })
+         .from($(".gate", r), { autoAlpha: 0, x: 16, duration: .55 }, "+=.4");
+      X.gated(pre, post, "Your turn: tick Human Approved to approve the idea");
+    },
+    plan: function (r, X) {
+      var pre = X.tl(), post = X.tl();
+      pre.from($(".page", r), { autoAlpha: 0, y: 20, duration: .6 })
+         .from($(".pg-title", r), { autoAlpha: 0, y: 8, duration: .45 }, "+=.1");
+      pill(pre, $(".pill-idea", r), "+=.3");
+      pre.from($$(".rr", r), { autoAlpha: 0, y: 6, stagger: .35, duration: .4 }, "+=.3")
+         .from($(".budget-h", r), { autoAlpha: 0, duration: .4 }, "+=.3")
+         .to($(".track i", r), { width: "5%", duration: .9, ease: "power2.out" })
+         .from($(".fit-row .stamp", r), { autoAlpha: 0, scale: 1.5, duration: .4, ease: "back.out(2)" }, "+=.2")
+         .from($(".smoke", r), { autoAlpha: 0, x: -8, duration: .4 }, "+=.4")
+         .from($(".gate", r), { autoAlpha: 0, x: 16, duration: .55 }, "+=.4");
+      X.gated(pre, post, "Your turn: tick Human Approved to launch the runs");
+    },
+    run: function (r, X) {
+      var t = X.tl(), runP = $(".pill-run", r);
+      t.from($(".stage-tag", r), { autoAlpha: 0, y: 6, duration: .4 })
+       .from($$(".pane", r), { autoAlpha: 0, y: 10, stagger: .2, duration: .4 }, "+=.1")
+       .from($(".chart svg", r), { autoAlpha: 0, duration: .4 }, "<")
+       .from($(".legend", r), { autoAlpha: 0, duration: .4 }, "<")
+       .from($(".status-row", r), { autoAlpha: 0, duration: .4 }, "<");
+      pill(t, runP, "+=.2");
+      t.addLabel("go");
+      t.to($(".bar.base i", r), { scaleX: 1, duration: 5.5, ease: "none" }, "go")
+       .to($(".bar:not(.base) i", r), { scaleX: 1, duration: 5.8, ease: "none" }, "go");
+      draw(t, $(".c-base", r), 5.5, "go");
+      draw(t, $(".c-alt", r), 5.8, "go");
+      t.fromTo($(".r1", r), { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: .45, immediateRender: true }, "go+=2.2");
+      pill(t, runP, "go+=5.9");
+      t.from($(".goon", r), { autoAlpha: 0, duration: .4 }, "go+=6")
+       .from($(".outcome", r), { autoAlpha: 0, scale: 1.5, duration: .4, ease: "back.out(2)" }, "go+=6.3")
+       .fromTo($(".r2", r), { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: .45, immediateRender: true }, "go+=6.6");
+      X.play = function () { X.run(t, X.done); };
+    },
+    analyze: function (r, X) {
+      var t = X.tl();
+      t.from($$(".yl, .gl", r), { autoAlpha: 0, duration: .4 })
+       .from($$(".xl", r), { autoAlpha: 0, duration: .4 }, "<")
+       .from($$(".bc", r), { scaleY: 0, duration: 1.1, stagger: .3, ease: "power2.out" }, "+=.1")
+       .from($$(".eb", r), { autoAlpha: 0, scaleY: 0, duration: .4, stagger: .2 }, "+=.1")
+       .from($$(".bv", r), { autoAlpha: 0, y: 8, duration: .4, stagger: .2 }, "<.2")
+       .from($(".res-table", r), { autoAlpha: 0, y: 14, duration: .5 }, "+=.4")
+       .from($$(".tr1", r), { autoAlpha: 0, x: -8, stagger: .4, duration: .4 }, "+=.1")
+       .from($(".diamond", r), { autoAlpha: 0, scale: .6, duration: .45, ease: "back.out(2)" }, "+=.6");
+      draw(t, $(".arrow-path", r), .5, "+=.3");
+      t.from($(".yes", r), { autoAlpha: 0, x: -8, duration: .45 }, "+=.1");
+      X.play = function () { X.run(t, X.done); };
+    },
+    finding: function (r, X) {
+      var pre = X.tl(), post = X.tl();
+      pre.from($(".page", r), { autoAlpha: 0, y: 20, duration: .6 })
+         .from($(".pg-title", r), { autoAlpha: 0, y: 8, duration: .45 }, "+=.1")
+         .from($(".one", r), { autoAlpha: 0, y: 8, duration: .6 }, "+=.3")
+         .from($(".gate", r), { autoAlpha: 0, x: 16, duration: .55 }, "+=.6");
+      gsap.set($(".closed", r), { autoAlpha: 0 });
+      pill(post, $(".pill-find", r), .5);
+      post.to($(".closed", r), { autoAlpha: 1, duration: .01 }, 1.1)
+          .from($(".closed", r), { scale: 1.5, duration: .4, ease: "back.out(2)" }, 1.1);
+      X.gated(pre, post, "Your turn: tick Confirmed to accept the finding");
+    },
+    board: function (r, X) {
+      var t = X.tl();
+      var COLX = [0, 228, 456], Y0 = 36, DY = 98;
+      var cards = {};
+      $$(".kcard", r).forEach(function (c) { cards[c.dataset.id] = c; });
+      var cols = [["wd", "ls"], ["mix", "clip"], ["cut"]];
+      var prog = { mix: 30, clip: 60, wd: 0, ls: 0, sam: 0, cut: 100 };
+      function setProg(id, v) {
+        var c = cards[id];
+        $(".pb-fg", c).style.width = (v / 10) + "ch";
+        $(".pnum", c).textContent = Math.round(v) + "%";
+      }
+      function counts(snap) { $$(".cnt", r).forEach(function (el) { el.textContent = snap[+el.dataset.col]; }); }
+      Object.keys(prog).forEach(function (id) { setProg(id, prog[id]); });
+      cols.forEach(function (list, ci) { list.forEach(function (id, n) { gsap.set(cards[id], { x: COLX[ci], y: Y0 + n * DY }); }); });
+      gsap.set(cards.sam, { autoAlpha: 0, x: COLX[0], y: Y0 });
+      counts([2, 2, 1]);
+      function grow(id, to, d, pos) {
+        var o = { v: prog[id] };
+        prog[id] = to;
+        t.to(o, { v: to, duration: d, ease: "none", onUpdate: function () { setProg(id, o.v); } }, pos);
+      }
+      function move(id, to, pos) {
+        var from = cols[0].indexOf(id) >= 0 ? 0 : cols[1].indexOf(id) >= 0 ? 1 : 2;
+        cols[from].splice(cols[from].indexOf(id), 1);
+        cols[to].push(id);
+        var n = cols[to].length - 1, el = cards[id], snap = cols.map(function (l) { return l.length; });
+        t.to(el, { zIndex: 5, scale: 1.04, rotation: 1.5, boxShadow: "0 18px 36px rgba(15,15,15,.22)", duration: .25 }, pos)
+         .to(el, { x: COLX[to], y: Y0 + n * DY, duration: .9, ease: "power3.inOut" }, ">");
+        cols[from].forEach(function (oid, k) { t.to(cards[oid], { y: Y0 + k * DY, duration: .6, ease: "power2.inOut" }, "<.2"); });
+        t.to(el, { scale: 1, rotation: 0, boxShadow: "0 0 0 1px rgba(15,15,15,.09), 0 2px 5px rgba(15,15,15,.08)", duration: .25 }, ">-.1")
+         .set(el, { zIndex: 1 })
+         .call(counts, [snap]);
+      }
+      t.from($(".nwin", r), { autoAlpha: 0, y: 16, duration: .6 });
+      grow("mix", 65, 2.4, "+=.4");
+      grow("clip", 100, 2.4, "<");
+      move("clip", 2, "+=.3");
+      t.set($(".oc", cards.clip), { visibility: "visible" });
+      t.call(function () { $(".hap", cards.wd).classList.add("on"); }, null, "+=.6");
+      move("wd", 1, "+=.4");
+      grow("mix", 100, 2.6, "+=.3");
+      grow("wd", 35, 2.6, "<");
+      move("mix", 2, "+=.3");
+      t.set($(".oc", cards.mix), { visibility: "visible" });
+      t.call(function () { $(".hap", cards.ls).classList.add("on"); }, null, "+=.6");
+      move("ls", 1, "+=.4");
+      grow("ls", 12, 1.6, "+=.2");
+      grow("wd", 48, 1.6, "<");
+      t.call(function () { counts([1, 2, 3]); }, null, "+=.3")
+       .to(cards.sam, { autoAlpha: 1, duration: .5 }, "<")
+       .from(cards.sam, { scale: .9, duration: .5, ease: "back.out(2)", immediateRender: false }, "<");
+      X.play = function () { X.run(t, X.done); };
+    },
+    review: function (r, X) {
+      var t = X.tl(), marks = $$(".mk", r), answered = 0;
+      t.from($(".page", r), { autoAlpha: 0, y: 16, duration: .6 })
+       .from($(".legend3", r), { autoAlpha: 0, duration: .4 }, "+=.2");
+      marks.forEach(function (m) { t.to(m, { backgroundSize: "100% 100%", duration: .6, ease: "power2.out" }, "+=.4"); });
+      marks.forEach(function (m) {
+        m.addEventListener("click", function () {
+          if (!m.classList.contains("armed")) return;
+          m.classList.remove("armed");
+          m.classList.add("answered");
+          var rep = $('.reply[data-k="' + m.dataset.k + '"]', r);
+          X.keep(gsap.fromTo(rep, { autoAlpha: 0, x: 14 }, { autoAlpha: 1, x: 0, duration: reduce ? 0 : .45 }));
+          answered += 1;
+          if (answered === marks.length) X.done();
+          else X.hint("Click the other marks too", true);
+        });
+      });
+      X.play = function () {
+        X.run(t, function () {
+          marks.forEach(function (m) { m.classList.add("armed"); });
+          X.hint("Your turn: click a colored mark to see the agent's answer", true);
+        });
+      };
+    },
+    remote: function (r, X) {
+      var t = X.tl();
+      t.from($$(".host", r), { autoAlpha: 0, y: 14, stagger: .3, duration: .5 })
+       .from($(".tube-label", r), { autoAlpha: 0, duration: .4 }, "+=.2")
+       .from($(".pipe", r), { autoAlpha: 0, duration: .4 }, "<")
+       .from($(".core", r), { scaleX: 0, duration: .9, ease: "power2.inOut" }, "<");
+      var span = 300;
+      var go = $(".go", r), back = $(".back", r);
+      t.fromTo(go, { x: 0, autoAlpha: 0 }, { autoAlpha: 1, duration: .2 }, "+=.3")
+       .to(go, { x: span - 150, duration: 1.6, ease: "power1.inOut" }, "<")
+       .to(go, { autoAlpha: 0, duration: .25 })
+       .fromTo(back, { x: span - 190, autoAlpha: 0 }, { autoAlpha: 1, duration: .2, immediateRender: false }, "+=.3")
+       .to(back, { x: 0, duration: 1.6, ease: "power1.inOut" }, "<")
+       .from($$(".win", r), { autoAlpha: 0, scale: .9, stagger: .2, duration: .35 }, "<.4")
+       .from($$(".fact", r), { autoAlpha: 0, y: 12, stagger: .35, duration: .45 }, "+=.3");
+      X.play = function () {
+        X.run(t, X.done);
+        if (!reduce) {
+          $$(".hb", r).forEach(function (h, i) {
+            X.keep(gsap.fromTo(h, { x: -12, opacity: 0 }, { x: span, duration: 2.4, ease: "none", repeat: -1, delay: 1.2 + i * .8,
+              keyframes: { opacity: [0, 1, 1, 0] } }));
+          });
+        }
+      };
     }
-    var playing = !tl.paused();
-    if (playing !== lastPlaying) {
-      lastPlaying = playing;
-      iPlay.innerHTML = playing ? PAUSE_ICON : PLAY_ICON;
-      bPlay.setAttribute("aria-label", playing ? "Pause" : "Play");
-    }
-  }
-  gsap.ticker.add(update);
+  };
 
-  function seek(t, pause) {
-    t = Math.max(0, Math.min(TOTAL - 1 / FPS, t));
-    if (pause) { tl.pause(); }
-    tl.time(t);
-    update();
-  }
-  function toggle() { if (tl.paused()) { tl.play(); } else { tl.pause(); } update(); }
-  function step(n) { seek(Math.round(tl.time() * FPS + n) / FPS, true); }
-  function jumpScene(dir) {
-    var si = sceneAt(tl.time());
-    var target = dir < 0 ? (tl.time() - SCENES[si].start > 0.5 ? si : Math.max(0, si - 1)) : Math.min(SCENES.length - 1, si + 1);
-    seek(SCENES[target].start + 0.02, false);
-  }
-
-  bPlay.addEventListener("click", toggle);
-  $("#bStart").addEventListener("click", function () { seek(0, false); });
-  $("#bPrev").addEventListener("click", function () { jumpScene(-1); });
-  $("#bNext").addEventListener("click", function () { jumpScene(1); });
-
-  var right = $("#tlRight"), scrubbing = false;
-  function timeFromX(clientX) {
-    var r = right.getBoundingClientRect();
-    return (clientX - r.left) / r.width * TOTAL;
-  }
-  right.addEventListener("pointerdown", function (e) {
-    if (e.target.closest && e.target.closest(".tl-bar")) { return; }
-    scrubbing = true;
-    right.setPointerCapture(e.pointerId);
-    seek(timeFromX(e.clientX), true);
+  /* ---- One controller per section ---- */
+  var sections = $$(".feature");
+  var ctrls = sections.map(function (sec) {
+    var c = { sec: sec, id: sec.dataset.step, stage: $(".stage", sec), box: $(".stage-box", sec), hintEl: $(".vis-hint", sec), live: [], played: false };
+    $(".replay", sec).addEventListener("click", function () { build(c); c.played = true; c.X.play(); });
+    return c;
   });
-  right.addEventListener("pointermove", function (e) { if (scrubbing) { seek(timeFromX(e.clientX), true); } });
-  function endScrub(e) { if (scrubbing) { scrubbing = false; try { right.releasePointerCapture(e.pointerId); } catch (err) {} } }
-  right.addEventListener("pointerup", endScrub);
-  right.addEventListener("pointercancel", endScrub);
 
-  document.addEventListener("keydown", function (e) {
-    var onButton = e.target && e.target.tagName === "BUTTON";
-    if (e.code === "Space" && !onButton) { e.preventDefault(); toggle(); }
-    else if (e.key === "ArrowRight") { e.preventDefault(); step(e.shiftKey ? 10 : 1); }
-    else if (e.key === "ArrowLeft") { e.preventDefault(); step(e.shiftKey ? -10 : -1); }
-    else if (e.key === "Home") { e.preventDefault(); seek(0, false); }
+  function makeX(c) {
+    var X = {};
+    X.keep = function (t) { c.live.push(t); return t; };
+    X.tl = function () { return X.keep(gsap.timeline({ paused: true })); };
+    X.hint = function (text, waiting) {
+      c.hintEl.textContent = text || "";
+      c.hintEl.classList.toggle("show", !!text);
+      c.hintEl.classList.toggle("wait", !!waiting);
+    };
+    X.done = function () { X.hint(""); };
+    X.run = function (t, then) {
+      if (then) t.eventCallback("onComplete", then);
+      if (reduce) t.progress(1); else t.play();
+    };
+    // Play a scene up to the human gate, wait for the click, then play the rest.
+    X.gated = function (pre, post, waitText) {
+      var r = c.stage, btn = $(".approve", r), ask = $(".click-me", r), res = $(".result", r);
+      var path = $(".box path", btn);
+      post.to(path, { opacity: 1, duration: .01 }, 0);
+      draw(post, path, .45, 0);
+      post.fromTo(res, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: .45, immediateRender: false }, .3);
+      btn.addEventListener("click", function () {
+        if (!btn.classList.contains("armed")) return;
+        btn.classList.remove("armed");
+        btn.classList.add("done");
+        btn.setAttribute("aria-pressed", "true");
+        gsap.set(ask, { visibility: "hidden" });
+        X.hint("");
+        X.run(post, X.done);
+      });
+      X.play = function () {
+        X.run(pre, function () {
+          btn.classList.add("armed");
+          btn.removeAttribute("aria-disabled");
+          gsap.set(ask, { visibility: "visible" });
+          X.hint(waitText, true);
+        });
+      };
+    };
+    return X;
+  }
+
+  function build(c) {
+    c.live.forEach(function (x) { x.kill(); });
+    c.live = [];
+    c.stage.innerHTML = '<div class="leak a"></div><div class="leak b"></div>';
+    c.stage.appendChild(document.getElementById("v-" + c.id).content.cloneNode(true));
+    c.X = makeX(c);
+    c.X.hint("");
+    scenes[c.id](c.stage, c.X);
+    fit(c);
+  }
+
+  /* ---- Scale each 760 x 540 scene to its frame ---- */
+  function fit(c) {
+    var col = c.sec.querySelector(".fcol"), head = c.sec.querySelector(".fhead"), foot = c.sec.querySelector(".vfoot");
+    var narrow = window.innerWidth <= 900;
+    var availW = col.clientWidth;
+    var availH = window.innerHeight - head.offsetHeight - foot.offsetHeight - 150;
+    var w = narrow ? availW : Math.min(availW, Math.max(480, availH) * W / H, 1000);
+    var s = w / W;
+    c.box.style.width = Math.round(w) + "px";
+    c.box.style.height = Math.round(H * s) + "px";
+    c.stage.style.transform = "scale(" + s + ")";
+  }
+  window.addEventListener("resize", function () { ctrls.forEach(fit); });
+
+  /* ---- Play a section when most of it is in view; reveal its text as it arrives ---- */
+  function watch() {
+    if (!("IntersectionObserver" in window)) {
+      ctrls.forEach(function (c) { c.sec.classList.add("seen"); c.played = true; c.X.play(); });
+      return;
+    }
+    var textIO = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) e.target.classList.add("seen"); });
+    }, { threshold: .2 });
+    var playIO = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var c = ctrls[sections.indexOf(e.target.closest(".feature"))];
+        if (c && !c.played) { c.played = true; c.X.play(); }
+      });
+    }, { threshold: .55 });
+    ctrls.forEach(function (c) { textIO.observe(c.sec); playIO.observe(c.box); });
+  }
+
+  /* ---- Hero flow chips jump to their section ---- */
+  $$("[data-go]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var sec = document.getElementById(b.dataset.go);
+      if (sec) sec.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+    });
   });
 
   /* ---- Copy the install prompt ---- */
@@ -1223,23 +1242,18 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 13px; }
       sel.addRange(range);
       copyBtn.textContent = "Selected: press Ctrl+C or ⌘C";
     }
-    try {
-      navigator.clipboard.writeText(text).then(function () { copyBtn.textContent = "Copied"; }, selectIt);
-    } catch (err) { selectIt(); }
+    try { navigator.clipboard.writeText(text).then(function () { copyBtn.textContent = "Copied"; }, selectIt); }
+    catch (err) { selectIt(); }
     setTimeout(function () { copyBtn.textContent = "Copy prompt"; }, 2200);
   });
 
-  /* ---- Start on a finished frame, then play ---- */
-  seek(POSTER, true);
-  if (!reduce) {
-    var started = false;
-    var go = function () { if (!started) { started = true; tl.play(); } };
-    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { setTimeout(go, 500); }); }
-    setTimeout(go, 1800);
-  }
+  /* ---- Build every scene paused; start watching once the fonts load, so typed text measures right ---- */
+  ctrls.forEach(build);
+  var started = false;
+  function begin() { if (started) return; started = true; ctrls.forEach(fit); watch(); }
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(begin); }
+  setTimeout(begin, 1500);
 })();
 </script>
-
-</body></html>
 </body>
 </html>
