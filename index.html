@@ -40,7 +40,7 @@
   --remote: #6f8ef6;
   --red: #ef6461;
   --orange: #f39b3d;
-  --cw: min(1180px, 90vw);
+  --cw: 75vw;
   --f-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
   --f-ui: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -98,22 +98,24 @@ button { font: inherit; }
 .hint-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 7px; vertical-align: 0; }
 
 /* ---------- Feature sections: one screen each, a short title over a large animation ---------- */
-.feature { position: relative; min-height: 100vh; min-height: 100svh; display: grid; align-items: center; padding: 48px 0; isolation: isolate; }
+.feature { position: relative; min-height: 100vh; min-height: 100svh; display: grid; align-items: center; padding: 78px 0 22px; isolation: isolate; }
 .feature::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(50% 45% at 50% 62%, color-mix(in srgb, var(--c) 12%, transparent), transparent 72%); }
-.fcol { display: grid; justify-items: center; gap: 28px; }
-.fhead { text-align: center; display: grid; justify-items: center; gap: 12px; max-width: 760px; opacity: 0; transform: translateY(22px); transition: opacity .8s ease, transform .8s ease; }
+.fcol { display: grid; justify-items: center; gap: 20px; }
+.fhead { text-align: center; display: grid; justify-items: center; gap: 8px; max-width: 860px; opacity: 0; transform: translateY(22px); transition: opacity .8s ease, transform .8s ease; }
 .feature.seen .fhead { opacity: 1; transform: none; }
-.meta { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; }
+.meta { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
 .idx { font-family: var(--f-mono); font-size: 14px; color: var(--c); letter-spacing: .06em; }
 .skill-chip { font-family: var(--f-mono); font-size: 14px; padding: 3px 11px; border-radius: 999px; border: 1px solid var(--stroke-2); background: var(--surface); color: var(--text); }
 .decide-chip { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background: rgba(185, 165, 255, .14); color: #e6deff; }
 .decide-chip i { width: 7px; height: 7px; transform: rotate(45deg); background: var(--human); }
-.fhead h2 { margin: 0; font-family: var(--f-display); font-weight: 820; font-variation-settings: "wdth" 96; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.02; letter-spacing: -.018em; text-wrap: balance; }
+.fhead h2 { margin: 0; font-family: var(--f-display); font-weight: 820; font-variation-settings: "wdth" 96; font-size: clamp(30px, 3.5vw, 50px); line-height: 1.04; letter-spacing: -.018em; text-wrap: balance; }
 .sub { margin: 0; font-size: clamp(17px, 1.6vw, 20px); color: var(--dim); text-wrap: balance; }
 .sub b { color: var(--text); font-weight: 600; }
 .visual { position: relative; }
 .stage-box { position: relative; border-radius: 18px; overflow: hidden; box-shadow: 0 40px 100px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .08); }
-.vfoot { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 38px; margin-top: -6px; }
+.vfoot { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 12px; min-height: 36px; margin-top: -4px; }
+.vfoot .meta { justify-self: start; }
+.vfoot .replay { justify-self: end; }
 .vis-hint { display: none; align-items: center; gap: 9px; padding: 8px 16px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--stroke-2); font-size: 15px; color: var(--text); }
 .vis-hint.show { display: inline-flex; }
 .vis-hint.wait { border-color: rgba(185, 165, 255, .65); background: rgba(185, 165, 255, .12); color: #efe9ff; }
@@ -151,7 +153,10 @@ footer { padding: 30px 0 60px; color: var(--muted); font-size: 14px; border-top:
 footer .wrap { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; }
 
 @media (max-width: 900px) {
+  :root { --cw: 90vw; }
   .feature { min-height: auto; padding: 56px 0; }
+  .vfoot { grid-template-columns: minmax(0, 1fr) auto; }
+  .vfoot .vis-hint { grid-column: 1 / -1; grid-row: 2; justify-self: center; }
   .fcol { gap: 20px; }
   .stage-box { border-radius: 12px; }
   .props, .steps3 { grid-template-columns: minmax(0, 1fr); }
@@ -165,12 +170,12 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space
 }
 </style>
 <style>
-/* ---------- The stage: one 760 x 540 scene, scaled to fit ---------- */
-.stage { position: absolute; left: 0; top: 0; width: 760px; height: 540px; transform-origin: 0 0; overflow: hidden; background: radial-gradient(120% 90% at 18% 8%, #1e1c3a, #141327 62%); color: var(--ink); font-family: var(--f-ui); font-size: 17px; line-height: 1.4; }
+/* ---------- The stage: one 1080 x 480 scene, scaled to fit ---------- */
+.stage { position: absolute; left: 0; top: 0; width: 1080px; height: 480px; transform-origin: 0 0; overflow: hidden; background: radial-gradient(120% 90% at 18% 8%, #1e1c3a, #141327 62%); color: var(--ink); font-family: var(--f-ui); font-size: 17px; line-height: 1.4; }
 .leak { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .45; pointer-events: none; }
 .leak.a { width: 420px; height: 420px; left: -140px; top: -170px; background: radial-gradient(circle, #5a3fd8 0%, rgba(90, 63, 216, 0) 70%); }
 .leak.b { width: 480px; height: 480px; right: -180px; bottom: -220px; background: radial-gradient(circle, #1d7f70 0%, rgba(29, 127, 112, 0) 70%); }
-.v { position: absolute; inset: 0; padding: 30px 28px; }
+.v { position: absolute; inset: 0; padding: 24px 32px; display: grid; align-content: center; }
 .mono { font-family: var(--f-mono); }
 .type { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom; width: 0; }
 .cur { display: inline-block; width: .55ch; height: 1.05em; background: var(--ink); vertical-align: -.16em; margin-left: 3px; animation: blink 1s steps(1) infinite; }
@@ -189,10 +194,15 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space
 .chips-label { margin: 24px 0 10px; font-family: var(--f-mono); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-dim); }
 .chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
 .chip { font-family: var(--f-mono); font-size: 16px; padding: 7px 13px; border-radius: 999px; border: 1px solid rgba(98, 196, 107, .5); background: rgba(98, 196, 107, .1); color: #dff5e1; }
+.inst { display: grid; grid-template-columns: 690px minmax(0, 1fr); gap: 52px; align-items: center; }
+.inst .term-body { font-size: 21px; padding: 20px 24px; }
+.inst .chips-label { margin-top: 0; }
+.inst .chips { flex-direction: column; align-items: flex-start; gap: 9px; }
+.inst .chip { font-size: 18px; }
 .chip.init { border-color: rgba(111, 142, 246, .55); background: rgba(111, 142, 246, .13); color: #e1e7ff; }
 
 /* Set up */
-.cmd-line { margin: 0 0 22px; font-family: var(--f-mono); font-size: 28px; }
+.cmd-line { margin: 0 0 16px; font-family: var(--f-mono); font-size: 26px; line-height: 1.3; }
 .cmd-line .pr { color: var(--agent); margin-right: 12px; }
 .cols3 { display: grid; grid-template-columns: 190px 290px 172px; gap: 26px; align-items: start; }
 .col-h { margin: 0 0 12px; font-family: var(--f-mono); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-dim); }
@@ -209,27 +219,23 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space
 .cli svg { width: 22px; height: 22px; flex: none; }
 .cli path { fill: none; stroke: var(--agent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .cli em { font-style: normal; color: var(--ink-dim); font-size: 13px; }
-.setup-grid { display: grid; grid-template-columns: 452px 224px; gap: 28px; align-items: start; }
+.setup-grid { display: grid; grid-template-columns: 500px minmax(0, 1fr); gap: 48px; align-items: start; }
 .ftree { background: #0e0d1a; border: 1px solid #2c2a47; border-radius: 12px; box-shadow: 0 24px 60px rgba(0, 0, 0, .45); overflow: hidden; }
 .ftree-bar { display: flex; justify-content: space-between; padding: 8px 14px; border-bottom: 1px solid #26243e; font-family: var(--f-mono); font-size: 12.5px; color: var(--ink-dim); letter-spacing: .08em; text-transform: uppercase; }
-.ftree-body { padding: 10px 14px 12px; font-family: var(--f-mono); font-size: 14.5px; line-height: 1.62; }
+.ftree-body { padding: 10px 16px 12px; font-family: var(--f-mono); font-size: 15px; line-height: 1.5; }
 .tl { margin: 0; white-space: pre; }
 .tg { color: #4b4870; }
 .td { color: #8fb0ff; }
 .tf { color: var(--ink); }
-.tn { color: var(--ink-dim); font-family: var(--f-ui); font-size: 12.5px; margin-left: 10px; }
-.setup-side .dbs { gap: 8px; }
-.setup-side .db-card { padding: 10px 11px; border-radius: 10px; gap: 2px; }
-.setup-side .db-card b { font-size: 16px; }
-.setup-side .db-card span { font-size: 12px; }
-.tools-h { margin-top: 18px !important; }
-.setup-side .clis { gap: 9px; }
-.setup-side .cli { font-size: 16px; }
+.tn { color: var(--ink-dim); font-family: var(--f-ui); font-size: 13.5px; margin-left: 12px; }
+.setup-side .dbs { gap: 12px; }
+.tools-h { margin-top: 26px !important; }
+.setup-side .clis { grid-template-columns: 1fr 1fr; gap: 14px 20px; }
 .note-line { position: absolute; left: 28px; right: 28px; bottom: 26px; margin: 0; font-size: 17px; color: var(--ink-dim); }
 .note-line b { color: var(--ink); font-weight: 600; }
 
 /* Notion-like pages */
-.split { display: grid; grid-template-columns: 456px 220px; gap: 28px; align-items: start; }
+.split { display: grid; grid-template-columns: 680px minmax(0, 1fr); gap: 44px; align-items: center; }
 .page { background: var(--paper); color: var(--paper-ink); border-radius: 14px; padding: 20px 22px; box-shadow: 0 30px 70px rgba(0, 0, 0, .45); }
 .pg-top { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 14px; color: var(--paper-dim); }
 .pg-top .db { font-weight: 600; }
@@ -253,10 +259,10 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
 .stamp { display: inline-block; border: 3px solid currentColor; border-radius: 8px; padding: 5px 12px; font-family: var(--f-display); font-weight: 820; font-variation-settings: "wdth" 110; font-size: 17px; letter-spacing: .05em; text-transform: uppercase; }
 
 /* The human gate */
-.gate { display: grid; gap: 14px; padding: 16px; border: 1.5px solid rgba(185, 165, 255, .6); background: rgba(185, 165, 255, .1); border-radius: 16px; }
+.gate { display: grid; gap: 14px; padding: 20px; border: 1.5px solid rgba(185, 165, 255, .6); background: rgba(185, 165, 255, .1); border-radius: 16px; }
 .gate .who { margin: 0; font-family: var(--f-mono); font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--human); }
-.gate .what { margin: 0; font-size: 19px; line-height: 1.3; color: #eee8ff; }
-.approve { display: flex; align-items: center; gap: 10px; padding: 10px 11px; border-radius: 10px; border: 1.5px solid rgba(185, 165, 255, .55); background: rgba(185, 165, 255, .06); color: #fff; font-family: var(--f-ui); font-size: 16px; white-space: nowrap; font-weight: 600; cursor: default; text-align: left; }
+.gate .what { margin: 0; font-size: 21px; line-height: 1.3; color: #eee8ff; }
+.approve { display: flex; align-items: center; gap: 10px; padding: 11px 13px; border-radius: 10px; border: 1.5px solid rgba(185, 165, 255, .55); background: rgba(185, 165, 255, .06); color: #fff; font-family: var(--f-ui); font-size: 17px; white-space: nowrap; font-weight: 600; cursor: default; text-align: left; }
 .approve .box { width: 26px; height: 26px; flex: none; border-radius: 6px; border: 2px solid var(--human); display: grid; place-items: center; }
 .approve .box svg { width: 19px; height: 19px; }
 .approve .box path { fill: none; stroke: var(--human); stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
@@ -279,7 +285,8 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
 .smoke { font-size: 14px; color: #237a2c; font-weight: 600; }
 
 /* Run */
-.runwrap { display: grid; grid-template-columns: 300px 376px; gap: 28px; align-items: start; }
+.runwrap { display: grid; grid-template-columns: 320px 400px minmax(0, 1fr); gap: 32px; align-items: start; }
+.reports { display: grid; gap: 14px; }
 .panes { display: grid; gap: 12px; }
 .stage-tag { justify-self: start; font-family: var(--f-mono); font-size: 14px; padding: 5px 10px; border-radius: 6px; background: rgba(111, 142, 246, .16); border: 1px solid rgba(111, 142, 246, .5); color: #dfe6ff; }
 .pane { background: #0e0d1a; border: 1px solid #2c2a47; border-radius: 10px; padding: 12px 14px; font-family: var(--f-mono); font-size: 14.5px; }
@@ -289,10 +296,8 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
 .bar i { display: block; height: 100%; width: 100%; background: var(--agent); transform-origin: left; transform: scaleX(0); }
 .bar.base i { background: #8c89b8; }
 .goon { margin: 0; font-family: var(--f-mono); font-size: 14px; color: var(--agent); }
-.report { position: absolute; left: 28px; width: 300px; padding: 10px 12px; border-radius: 10px; background: #f6f5f1; color: var(--paper-ink); box-shadow: 0 16px 40px rgba(0, 0, 0, .4); font-size: 13.5px; line-height: 1.4; }
+.report { position: relative; padding: 12px 14px; border-radius: 10px; background: #f6f5f1; color: var(--paper-ink); box-shadow: 0 16px 40px rgba(0, 0, 0, .4); font-size: 13.5px; line-height: 1.4; }
 .report b { display: block; font-size: 12.5px; color: var(--paper-dim); font-weight: 600; margin-bottom: 2px; }
-.report.r1 { top: 318px; }
-.report.r2 { top: 412px; }
 .chart svg { display: block; }
 .chart .axis { stroke: #3a3858; stroke-width: 1.5; }
 .chart .grid { stroke: #252342; stroke-width: 1; }
@@ -306,19 +311,19 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
 .outcome { color: var(--agent); font-size: 15px; }
 
 /* Analyze */
-.anwrap { display: grid; grid-template-columns: 290px 386px; gap: 28px; align-items: start; }
-.barchart { position: relative; height: 250px; margin: 18px 0 0 46px; border-left: 2px solid #3a3858; border-bottom: 2px solid #3a3858; }
+.anwrap { display: grid; grid-template-columns: 420px minmax(0, 1fr); gap: 56px; align-items: center; }
+.barchart { position: relative; height: 250px; margin: 0 0 28px 46px; border-left: 2px solid #3a3858; border-bottom: 2px solid #3a3858; }
 .yl { position: absolute; left: -46px; font-family: var(--f-mono); font-size: 12.5px; color: var(--ink-dim); transform: translateY(50%); }
 .gl { position: absolute; left: 0; right: 0; height: 1px; background: #252342; }
 .bc { position: absolute; bottom: 0; width: 80px; transform-origin: bottom; border-radius: 6px 6px 0 0; }
-.bc.base { left: 34px; height: 100px; background: #8c89b8; }
-.bc.alt { left: 148px; height: 171px; background: var(--agent); }
+.bc.base { left: 76px; height: 100px; background: #8c89b8; }
+.bc.alt { left: 216px; height: 171px; background: var(--agent); }
 .eb { position: absolute; width: 2px; background: var(--ink); }
 .eb::before, .eb::after { content: ""; position: absolute; left: -7px; width: 16px; height: 2px; background: var(--ink); }
 .eb::before { top: 0; } .eb::after { bottom: 0; }
 .bv { position: absolute; width: 80px; text-align: center; font-family: var(--f-mono); font-size: 17px; font-weight: 600; }
 .xl { position: absolute; bottom: -28px; width: 80px; text-align: center; font-family: var(--f-mono); font-size: 14px; color: var(--ink-dim); }
-.res-table { background: var(--paper); color: var(--paper-ink); border-radius: 12px; padding: 16px 18px; box-shadow: 0 24px 60px rgba(0, 0, 0, .4); }
+.res-table { background: var(--paper); color: var(--paper-ink); border-radius: 12px; padding: 18px 22px; box-shadow: 0 24px 60px rgba(0, 0, 0, .4); }
 .res-table .tbl-cap { margin: 0 0 4px; line-height: 1.35; }
 .res-table td.best { font-weight: 700; }
 .decide-row { display: flex; align-items: center; gap: 16px; margin-top: 26px; }
@@ -329,7 +334,7 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
 .decide-row .yes { font-size: 17px; color: var(--agent); line-height: 1.3; }
 
 /* Finding */
-.one { margin: 0; font-size: 17px; line-height: 1.5; }
+.one { margin: 0; font-size: 18px; line-height: 1.55; }
 .closed { color: var(--agent); margin-top: 18px; }
 
 /* Board */
@@ -339,19 +344,19 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
 .nw-title { margin: 0 0 8px; font-weight: 700; font-size: 25px; }
 .nw-tabs { display: flex; gap: 14px; font-size: 13px; color: #787774; padding-bottom: 8px; }
 .nw-tabs .on { color: #37352f; font-weight: 600; box-shadow: 0 10px 0 -8px #37352f; }
-.kb { position: relative; width: 668px; height: 352px; margin-top: 12px; }
+.kb { position: relative; width: 980px; height: 328px; margin-top: 12px; }
 .kcol { position: absolute; top: 0; display: flex; align-items: center; gap: 8px; }
 .kh { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; font-size: 13px; font-weight: 600; }
 .cnt { color: #9b9a97; font-size: 13.5px; font-variant-numeric: tabular-nums; }
-.kcard { position: absolute; left: 0; top: 0; width: 212px; height: 88px; background: #fff; border-radius: 6px; box-shadow: 0 0 0 1px rgba(15, 15, 15, .09), 0 2px 5px rgba(15, 15, 15, .08); padding: 8px 10px; display: grid; align-content: start; gap: 4px; font-size: 12px; }
+.kcard { position: absolute; left: 0; top: 0; width: 312px; height: 92px; line-height: 1.28; grid-auto-rows: max-content; background: #fff; border-radius: 6px; box-shadow: 0 0 0 1px rgba(15, 15, 15, .09), 0 2px 5px rgba(15, 15, 15, .08); padding: 8px 10px; display: grid; align-content: start; gap: 4px; font-size: 12px; }
 .kcard p { margin: 0; min-width: 0; }
-.kt { font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 40px; }
-.ki { color: #787774; font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.kp { display: flex; align-items: center; gap: 6px; font-family: var(--f-mono); font-size: 11px; }
+.kt { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 40px; }
+.ki { color: #787774; font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kp { display: flex; align-items: center; gap: 6px; font-family: var(--f-mono); font-size: 11.5px; }
 .pbar { position: relative; display: inline-block; width: 10ch; white-space: nowrap; }
 .pb-bg { color: #dcdad5; }
 .pb-fg { position: absolute; left: 0; top: 0; overflow: hidden; white-space: nowrap; color: #37352f; }
-.km { display: flex; align-items: center; gap: 10px; color: #787774; font-size: 11px; }
+.km { display: flex; align-items: center; gap: 10px; color: #787774; font-size: 12px; }
 .hap { display: inline-flex; align-items: center; gap: 5px; }
 .cb { width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid #9b9a97; display: grid; place-items: center; }
 .cb svg { width: 10px; height: 10px; }
@@ -360,8 +365,8 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
 .oc { position: absolute; top: 8px; right: 8px; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 4px; background: #dbeddb; color: #1c3829; visibility: hidden; }
 
 /* Review */
-.revwrap { display: grid; grid-template-columns: 410px 266px; gap: 28px; align-items: start; }
-.p-rev p.txt { margin: 0; font-size: 19px; line-height: 1.8; }
+.revwrap { display: grid; grid-template-columns: 600px minmax(0, 1fr); gap: 44px; align-items: start; }
+.p-rev p.txt { margin: 0; font-size: 21px; line-height: 1.8; }
 .mk { background-repeat: no-repeat; background-size: 0% 100%; border-radius: 4px; padding: 1px 3px; border: 0; font: inherit; color: inherit; cursor: default; }
 .mk.r { background-image: linear-gradient(rgba(239, 100, 97, .38), rgba(239, 100, 97, .38)); }
 .mk.o { background-image: linear-gradient(rgba(243, 155, 61, .42), rgba(243, 155, 61, .42)); }
@@ -380,10 +385,10 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
 .tag.r { color: var(--red); } .tag.o { color: var(--orange); } .tag.p { color: var(--human); }
 
 /* Remote */
-.remwrap { display: grid; grid-template-columns: 214px 1fr 214px; align-items: center; margin-top: 26px; }
-.host { border-radius: 16px; padding: 16px 18px; border: 1.5px solid #3a3858; background: rgba(255, 255, 255, .04); display: grid; gap: 8px; }
-.host h3 { margin: 0; font-family: var(--f-display); font-size: 22px; font-weight: 760; font-variation-settings: "wdth" 96; }
-.host p { margin: 0; font-family: var(--f-mono); font-size: 13.5px; color: var(--ink-dim); line-height: 1.5; }
+.remwrap { display: grid; grid-template-columns: 270px minmax(0, 1fr) 270px; align-items: center; }
+.host { border-radius: 16px; padding: 20px 22px; border: 1.5px solid #3a3858; background: rgba(255, 255, 255, .04); display: grid; gap: 8px; }
+.host h3 { margin: 0; font-family: var(--f-display); font-size: 26px; font-weight: 760; font-variation-settings: "wdth" 96; }
+.host p { margin: 0; font-family: var(--f-mono); font-size: 15px; color: var(--ink-dim); line-height: 1.5; }
 .host .win { display: inline-block; font-family: var(--f-mono); font-size: 13px; padding: 3px 9px; border-radius: 6px; background: rgba(98, 196, 107, .14); border: 1px solid rgba(98, 196, 107, .5); color: #dff5e1; margin: 0 6px 6px 0; }
 .host.hpc { border-color: rgba(111, 142, 246, .6); }
 .gpus { display: flex; gap: 6px; }
@@ -391,14 +396,14 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
 .tube { position: relative; height: 160px; }
 .tube .pipe { position: absolute; left: 6px; right: 6px; top: 68px; height: 22px; border-radius: 11px; background: rgba(79, 103, 184, .35); }
 .tube .core { position: absolute; left: 6px; right: 6px; top: 77.5px; height: 3px; border-radius: 2px; background: var(--remote); transform-origin: left; }
-.tube-label { position: absolute; top: 18px; left: 0; right: 0; text-align: center; font-family: var(--f-mono); font-size: 14px; color: #dfe6ff; }
+.tube-label { position: absolute; top: 16px; left: 0; right: 0; text-align: center; font-family: var(--f-mono); font-size: 16px; color: #dfe6ff; }
 .hbwrap { position: absolute; left: 6px; right: 6px; top: 73px; height: 12px; overflow: hidden; }
 .hb { position: absolute; top: 0; left: 0; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 0 12px 3px rgba(111, 142, 246, .9); opacity: 0; }
-.packet { position: absolute; top: 106px; left: 0; font-family: var(--f-mono); font-size: 13px; padding: 4px 9px; border-radius: 6px; background: #0e0d1a; border: 1px solid var(--remote); color: #dfe6ff; white-space: nowrap; opacity: 0; }
+.packet { position: absolute; top: 106px; left: 0; font-family: var(--f-mono); font-size: 14.5px; padding: 4px 9px; border-radius: 6px; background: #0e0d1a; border: 1px solid var(--remote); color: #dfe6ff; white-space: nowrap; opacity: 0; }
 .packet.back { border-color: var(--agent); color: #dff5e1; }
-.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 30px; }
-.fact { border-radius: 12px; padding: 12px 14px; background: rgba(255, 255, 255, .05); border: 1px solid #34324d; font-size: 14.5px; color: var(--ink-dim); line-height: 1.4; }
-.fact b { display: block; color: var(--ink); font-size: 15.5px; margin-bottom: 2px; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 34px; }
+.fact { border-radius: 12px; padding: 14px 16px; background: rgba(255, 255, 255, .05); border: 1px solid #34324d; font-size: 15.5px; color: var(--ink-dim); line-height: 1.4; }
+.fact b { display: block; color: var(--ink); font-size: 17px; margin-bottom: 3px; }
 
 </style>
 </head>
@@ -454,120 +459,110 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
   <section class="feature" id="install" data-step="install" style="--c:#A9CBC7">
     <div class="wrap fcol">
       <header class="fhead">
-        <div class="meta"><span class="idx">01</span><span class="skill-chip">install.sh</span></div>
         <h2>Install in one prompt</h2>
         <p class="sub">One sentence in Claude Code or Codex installs <b>all seven skills</b>.</p>
       </header>
       <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="A terminal installs the seven skills from one prompt."></div></div></div>
-      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+      <div class="vfoot"><div class="meta"><span class="idx">01</span><span class="skill-chip">install.sh</span></div><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
     </div>
   </section>
 
   <section class="feature" id="setup" data-step="setup" style="--c:#677DE0">
     <div class="wrap fcol">
       <header class="fhead">
-        <div class="meta"><span class="idx">02</span><span class="skill-chip">vrl-init-workspace</span></div>
         <h2>Set up once per machine</h2>
         <p class="sub">Workspace, Notion project, and tools, <b>ready in one run</b>.</p>
       </header>
       <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="The setup builds the workspace folders, four Notion databases, and four command-line tools."></div></div></div>
-      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+      <div class="vfoot"><div class="meta"><span class="idx">02</span><span class="skill-chip">vrl-init-workspace</span></div><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
     </div>
   </section>
 
   <section class="feature" id="propose" data-step="propose" style="--c:#4AA44C">
     <div class="wrap fcol">
       <header class="fhead">
-        <div class="meta"><span class="idx">03</span><span class="skill-chip">vrl-propose-idea</span><span class="decide-chip"><i></i>You decide</span></div>
         <h2>Turn a hunch into a testable idea</h2>
         <p class="sub">A hypothesis, its evidence, and a staged test. <b>You approve it first.</b></p>
       </header>
       <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="An idea page in Notion, waiting for your approval."></div></div></div>
-      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+      <div class="vfoot"><div class="meta"><span class="idx">03</span><span class="skill-chip">vrl-propose-idea</span><span class="decide-chip"><i></i>You decide</span></div><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
     </div>
   </section>
 
   <section class="feature" id="plan" data-step="plan" style="--c:#B3C7B3">
     <div class="wrap fcol">
       <header class="fhead">
-        <div class="meta"><span class="idx">04</span><span class="skill-chip">vrl-plan-experiment</span><span class="decide-chip"><i></i>You decide</span></div>
         <h2>Plan before anything runs</h2>
         <p class="sub">Every run, step, and cost, sized to the budget. <b>You approve the plan.</b></p>
       </header>
       <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="An experiment plan that fits the budget, waiting for your approval."></div></div></div>
-      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+      <div class="vfoot"><div class="meta"><span class="idx">04</span><span class="skill-chip">vrl-plan-experiment</span><span class="decide-chip"><i></i>You decide</span></div><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
     </div>
   </section>
 
   <section class="feature" id="run" data-step="run" style="--c:#3DA2A5">
     <div class="wrap fcol">
       <header class="fhead">
-        <div class="meta"><span class="idx">05</span><span class="skill-chip">vrl-run-experiment</span></div>
         <h2>Run, and hear back when it matters</h2>
         <p class="sub">Jobs run in tmux and <b>report when there is news</b>.</p>
       </header>
       <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="Two runs train in tmux while reports arrive."></div></div></div>
-      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+      <div class="vfoot"><div class="meta"><span class="idx">05</span><span class="skill-chip">vrl-run-experiment</span></div><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
     </div>
   </section>
 
   <section class="feature" id="analyze" data-step="analyze" style="--c:#E4D84C">
     <div class="wrap fcol">
       <header class="fhead">
-        <div class="meta"><span class="idx">06</span><span class="skill-chip">vrl-analyze-results</span></div>
         <h2>Turn metrics into evidence</h2>
         <p class="sub">Mean ± std, significance, and figures, <b>straight from the metrics files</b>.</p>
       </header>
       <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="A bar chart and Table 1 compare mixup with the baseline."></div></div></div>
-      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+      <div class="vfoot"><div class="meta"><span class="idx">06</span><span class="skill-chip">vrl-analyze-results</span></div><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
     </div>
   </section>
 
   <section class="feature" id="finding" data-step="finding" style="--c:#E7C19E">
     <div class="wrap fcol">
       <header class="fhead">
-        <div class="meta"><span class="idx">07</span><span class="skill-chip">vrl-write-finding</span><span class="decide-chip"><i></i>You decide</span></div>
         <h2>Record what you verified</h2>
         <p class="sub">A paper-style finding that <b>counts once you confirm it</b>.</p>
       </header>
       <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="A finding page, waiting for your confirmation."></div></div></div>
-      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+      <div class="vfoot"><div class="meta"><span class="idx">07</span><span class="skill-chip">vrl-write-finding</span><span class="decide-chip"><i></i>You decide</span></div><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
     </div>
   </section>
 
   <section class="feature" id="board" data-step="board" style="--c:#F46DD6">
     <div class="wrap fcol">
       <header class="fhead">
-        <div class="meta"><span class="idx">08</span><span class="skill-chip">Notion</span></div>
         <h2>Many experiments at once</h2>
         <p class="sub">One board, <b>kept current by the agents</b>.</p>
       </header>
       <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="A Notion board where experiment cards move between columns."></div></div></div>
-      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+      <div class="vfoot"><div class="meta"><span class="idx">08</span><span class="skill-chip">Notion</span></div><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
     </div>
   </section>
 
   <section class="feature" id="review" data-step="review" style="--c:#E5BCC9">
     <div class="wrap fcol">
       <header class="fhead">
-        <div class="meta"><span class="idx">09</span><span class="skill-chip">Review by color</span></div>
         <h2>Mark it, and the agent answers</h2>
         <p class="sub"><b style="color:var(--red)">Red</b> is wrong, <b style="color:var(--orange)">orange</b> is unclear, <b style="color:var(--human)">purple</b> is not acceptable.</p>
       </header>
       <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="Text marked in red, orange, and purple, with the agent's answers."></div></div></div>
-      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+      <div class="vfoot"><div class="meta"><span class="idx">09</span><span class="skill-chip">Review by color</span></div><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
     </div>
   </section>
 
   <section class="feature" id="remote" data-step="remote" style="--c:#8FA4FF">
     <div class="wrap fcol">
       <header class="fhead">
-        <div class="meta"><span class="idx">10</span><span class="skill-chip">Remote mode</span></div>
         <h2>No GPU here? Compute over SSH.</h2>
         <p class="sub">Your laptop drives; <b>a remote host does the work</b>.</p>
       </header>
       <div class="visual"><div class="stage-box"><div class="stage" role="img" aria-label="A laptop and a GPU host joined by one SSH connection."></div></div></div>
-      <div class="vfoot"><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
+      <div class="vfoot"><div class="meta"><span class="idx">10</span><span class="skill-chip">Remote mode</span></div><span class="vis-hint" aria-live="polite"></span><button class="replay" type="button"><svg viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5"/></svg>Replay</button></div>
     </div>
   </section>
 
@@ -610,6 +605,7 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
 
 <template id="v-install">
   <div class="v">
+    <div class="inst">
     <div class="term">
       <div class="term-bar"><i></i><i></i><i></i><span>Claude Code · Codex</span></div>
       <div class="term-body">
@@ -620,6 +616,7 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
         <p class="out o3">copies in ~/.agents/skills, links in ~/.claude/skills</p>
       </div>
     </div>
+    <div class="skills7">
     <p class="chips-label">The seven skills</p>
     <ul class="chips">
       <li class="chip init">vrl-init-workspace</li>
@@ -630,6 +627,8 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
       <li class="chip">vrl-write-finding</li>
       <li class="chip">vrl-search-papers</li>
     </ul>
+    </div>
+    </div>
   </div>
 </template>
 
@@ -750,7 +749,7 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
         <p class="goon">Go on when mixup is not worse: met</p>
       </div>
       <div class="chart">
-        <svg width="376" height="230" viewBox="0 0 376 230">
+        <svg width="400" height="245" viewBox="0 0 376 230">
           <line class="grid" x1="40" y1="60" x2="370" y2="60"/>
           <line class="grid" x1="40" y1="115" x2="370" y2="115"/>
           <line class="grid" x1="40" y1="170" x2="370" y2="170"/>
@@ -769,9 +768,12 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
           <span class="stamp outcome">Outcome: Done</span>
         </div>
       </div>
+      <div class="reports">
+        <p class="col-h">Progress reports</p>
+        <div class="report r1"><b>Report · 14:05</b>Epoch 25 of 50, both runs healthy. Next report: after the evaluation at epoch 50.</div>
+        <div class="report r2"><b>Report · 14:52</b>Both runs finished. Next: the analysis.</div>
+      </div>
     </div>
-    <div class="report r1"><b>Report · 14:05</b>Epoch 25 of 50, both runs healthy. Next report: after the evaluation at epoch 50.</div>
-    <div class="report r2"><b>Report · 14:52</b>Both runs finished. Next: the analysis.</div>
   </div>
 </template>
 
@@ -783,12 +785,12 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
         <span class="yl" style="bottom:0">74%</span><span class="yl" style="bottom:83px">76%</span><span class="yl" style="bottom:167px">78%</span><span class="yl" style="bottom:250px">80%</span>
         <div class="bc base"></div>
         <div class="bc alt"></div>
-        <span class="eb e-base" style="left:73px; bottom:88px; height:25px"></span>
-        <span class="eb e-alt" style="left:187px; bottom:163px; height:17px"></span>
-        <span class="bv v-base" style="left:34px; bottom:118px">76.4</span>
-        <span class="bv v-alt" style="left:148px; bottom:184px; color:var(--agent)">78.1</span>
-        <span class="xl" style="left:34px">baseline</span>
-        <span class="xl" style="left:148px">mixup</span>
+        <span class="eb e-base" style="left:115px; bottom:88px; height:25px"></span>
+        <span class="eb e-alt" style="left:255px; bottom:163px; height:17px"></span>
+        <span class="bv v-base" style="left:76px; bottom:118px">76.4</span>
+        <span class="bv v-alt" style="left:216px; bottom:184px; color:var(--agent)">78.1</span>
+        <span class="xl" style="left:76px">baseline</span>
+        <span class="xl" style="left:216px">mixup</span>
       </div>
       <div>
         <div class="res-table">
@@ -841,8 +843,8 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
       </div>
       <div class="kb">
         <div class="kcol" style="left:0"><span class="kh st-planned">Planned</span><span class="cnt" data-col="0"></span></div>
-        <div class="kcol" style="left:228px"><span class="kh st-running">Running</span><span class="cnt" data-col="1"></span></div>
-        <div class="kcol" style="left:456px"><span class="kh st-finish">Finish</span><span class="cnt" data-col="2"></span></div>
+        <div class="kcol" style="left:334px"><span class="kh st-running">Running</span><span class="cnt" data-col="1"></span></div>
+        <div class="kcol" style="left:668px"><span class="kh st-finish">Finish</span><span class="cnt" data-col="2"></span></div>
         <div class="kcard" data-id="mix"><p class="kt">Mixup vs standard aug, stage 2</p><p class="ki">Idea: mixup on CIFAR-100</p><p class="kp"><span class="pbar"><span class="pb-bg">░░░░░░░░░░</span><span class="pb-fg">██████████</span></span><span class="pnum">30%</span></p><p class="km"><span>Est. 4 h</span><span class="hap on"><span class="cb"><svg viewBox="0 0 12 12"><path d="M2.5 6.5 L5 9 L9.5 3.5"/></svg></span>Approved</span></p><span class="oc">Done</span></div>
         <div class="kcard" data-id="clip"><p class="kt">Gradient clipping at 1.0, stage 1</p><p class="ki">Idea: clipping for GPT-2 small</p><p class="kp"><span class="pbar"><span class="pb-bg">░░░░░░░░░░</span><span class="pb-fg">██████████</span></span><span class="pnum">60%</span></p><p class="km"><span>Est. 2 h</span><span class="hap on"><span class="cb"><svg viewBox="0 0 12 12"><path d="M2.5 6.5 L5 9 L9.5 3.5"/></svg></span>Approved</span></p><span class="oc">Done</span></div>
         <div class="kcard" data-id="wd"><p class="kt">Weight decay sweep, stage 1</p><p class="ki">Idea: weight decay for ViT-S</p><p class="kp"><span class="pbar"><span class="pb-bg">░░░░░░░░░░</span><span class="pb-fg">██████████</span></span><span class="pnum">0%</span></p><p class="km"><span>Est. 3 h</span><span class="hap"><span class="cb"><svg viewBox="0 0 12 12"><path d="M2.5 6.5 L5 9 L9.5 3.5"/></svg></span>Approved</span></p><span class="oc">Done</span></div>
@@ -906,7 +908,7 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
 (function () {
   "use strict";
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var W = 760, H = 540;
+  var W = 1080, H = 480;
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
 
@@ -990,7 +992,8 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
        .to($(".bar:not(.base) i", r), { scaleX: 1, duration: 5.8, ease: "none" }, "go");
       draw(t, $(".c-base", r), 5.5, "go");
       draw(t, $(".c-alt", r), 5.8, "go");
-      t.fromTo($(".r1", r), { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: .45, immediateRender: true }, "go+=2.2");
+      t.from($(".reports .col-h", r), { autoAlpha: 0, duration: .4 }, "go+=1.9")
+       .fromTo($(".r1", r), { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: .45, immediateRender: true }, "go+=2.2");
       pill(t, runP, "go+=5.9");
       t.from($(".goon", r), { autoAlpha: 0, duration: .4 }, "go+=6")
        .from($(".outcome", r), { autoAlpha: 0, scale: 1.5, duration: .4, ease: "back.out(2)" }, "go+=6.3")
@@ -1025,7 +1028,7 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
     },
     board: function (r, X) {
       var t = X.tl();
-      var COLX = [0, 228, 456], Y0 = 36, DY = 98;
+      var COLX = [0, 334, 668], Y0 = 36, DY = 100;
       var cards = {};
       $$(".kcard", r).forEach(function (c) { cards[c.dataset.id] = c; });
       var cols = [["wd", "ls"], ["mix", "clip"], ["cut"]];
@@ -1107,12 +1110,11 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
        .from($(".tube-label", r), { autoAlpha: 0, duration: .4 }, "+=.2")
        .from($(".pipe", r), { autoAlpha: 0, duration: .4 }, "<")
        .from($(".core", r), { scaleX: 0, duration: .9, ease: "power2.inOut" }, "<");
-      var span = 300;
-      var go = $(".go", r), back = $(".back", r);
+      var go = $(".go", r), back = $(".back", r), span = $(".hbwrap", r).offsetWidth;
       t.fromTo(go, { x: 0, autoAlpha: 0 }, { autoAlpha: 1, duration: .2 }, "+=.3")
-       .to(go, { x: span - 150, duration: 1.6, ease: "power1.inOut" }, "<")
+       .to(go, { x: span - go.offsetWidth, duration: 1.6, ease: "power1.inOut" }, "<")
        .to(go, { autoAlpha: 0, duration: .25 })
-       .fromTo(back, { x: span - 190, autoAlpha: 0 }, { autoAlpha: 1, duration: .2, immediateRender: false }, "+=.3")
+       .fromTo(back, { x: span - back.offsetWidth, autoAlpha: 0 }, { autoAlpha: 1, duration: .2, immediateRender: false }, "+=.3")
        .to(back, { x: 0, duration: 1.6, ease: "power1.inOut" }, "<")
        .from($$(".win", r), { autoAlpha: 0, scale: .9, stagger: .2, duration: .35 }, "<.4")
        .from($$(".fact", r), { autoAlpha: 0, y: 12, stagger: .35, duration: .45 }, "+=.3");
@@ -1189,15 +1191,16 @@ table.mini th { color: var(--paper-dim); font-weight: 500; font-size: 12.5px; }
     fit(c);
   }
 
-  /* ---- Scale each 760 x 540 scene to its frame ---- */
+  /* ---- Scale each 1080 x 480 scene to its frame ---- */
   function fit(c) {
+    // Fill the column (75% of the window), but keep the title, stage, and footer within one screen.
     var col = c.sec.querySelector(".fcol"), head = c.sec.querySelector(".fhead"), foot = c.sec.querySelector(".vfoot");
-    var narrow = window.innerWidth <= 900;
-    var availW = col.clientWidth;
-    var availH = window.innerHeight - head.offsetHeight - foot.offsetHeight - 150;
-    var w = narrow ? availW : Math.min(availW, Math.max(480, availH) * W / H, 1000);
+    var cs = getComputedStyle(c.sec), gap = parseFloat(getComputedStyle(col).rowGap) || 0;
+    var availH = window.innerHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - head.offsetHeight - foot.offsetHeight - 2 * gap;
+    var w = window.innerWidth <= 900 ? col.clientWidth : Math.min(col.clientWidth, Math.max(360, availH) * W / H);
     var s = w / W;
     c.box.style.width = Math.round(w) + "px";
+    foot.style.width = Math.round(w) + "px";
     c.box.style.height = Math.round(H * s) + "px";
     c.stage.style.transform = "scale(" + s + ")";
   }
